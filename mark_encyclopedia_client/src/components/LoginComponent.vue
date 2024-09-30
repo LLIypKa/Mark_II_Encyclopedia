@@ -75,6 +75,10 @@
     .v-text-field >>> label {
         font-size: large;
     }
+    
+    .v-text-field >>> .v-messages__message {
+    font-size: 18px; 
+}
 
     .v-messages {
         font-size: large;
