@@ -4,8 +4,8 @@
             <v-card-title class="v-card-title">Авторизация</v-card-title>
             <v-card-text>
                 <v-form ref = "form" v-model="valid">
-                    <v-text-field label = "Email" v-model="email" :rules="emailRules" type="email" required class="v-text-field"/>
-                    <v-text-field label = "Password" v-model="password" :rules="passwordRules" type="password" required class="v-text-field"/>
+                    <v-text-field variant="underlined" label = "Email" v-model="email" :rules="emailRules" type="email" required class="v-text-field"/>
+                    <v-text-field variant="underlined" label = "Password" v-model="password" :rules="passwordRules" type="password" required class="v-text-field"/>
                     <v-btn type = "submit" text = "Войти" color="primary" @click="login" :disabled="!valid"/>
                 </v-form>
             </v-card-text>
@@ -64,9 +64,8 @@
     .v-text-field {
         background: transparent;
         border: none;
-        border-bottom: 1px solid #fff;
         color: #fff;
-        font-size: 20px;
+        font-size: 100px;
     }
     .v-btn {
         font-size: 20px; 
@@ -75,5 +74,9 @@
     .v-card {
         background: transparent; /* Прозрачный фон для карточки */
         box-shadow: none; /* Убираем тень, чтобы не было визуального блока */
+    }
+    .v-label {
+        font-size: 24px; 
+        color: #fff;
     }
 </style>
