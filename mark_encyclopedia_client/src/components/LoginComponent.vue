@@ -53,6 +53,7 @@
         transform: translate(-50%, -50%);
         font-family: 'Gabriola';
         justify-content: center;
+        backdrop-filter: blur(4px);
     }
     .v-card-title {
         color: #fff;
