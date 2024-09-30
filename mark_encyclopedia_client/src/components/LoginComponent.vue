@@ -2,7 +2,7 @@
     <v-container class="transparentForm">
         <v-card>
             <v-card-title class="v-card-title">Авторизация</v-card-title>
-            <v-card-text>
+            <v-card-text style="font-size: larger;">
                 <v-form ref = "form" v-model="valid">
                     <v-text-field variant="underlined" label = "Email" v-model="email" :rules="emailRules" type="email" required class="v-text-field"/>
                     <v-text-field variant="underlined" label = "Password" v-model="password" :rules="passwordRules" type="password" required class="v-text-field"/>
@@ -66,8 +66,20 @@
         background: transparent;
         border: none;
         color: #fff;
-        font-size: 100px;
     }
+
+    .v-text-field >>> input {
+        font-size: 4vh;
+    }
+
+    .v-text-field >>> label {
+        font-size: large;
+    }
+
+    .v-messages {
+        font-size: large;
+    }
+
     .v-btn {
         font-size: 20px; 
         width: 100%;
