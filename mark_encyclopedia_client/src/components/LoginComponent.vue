@@ -33,7 +33,7 @@
         methods: {
             login() {
                 if (this.$refs.form.validate()) {
-                    alert(this.email)
+                    this.$router.push('/home');
                 }
             }
         }
