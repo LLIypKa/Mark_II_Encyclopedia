@@ -3,10 +3,12 @@
         <v-card>
             <v-card-title class="v-card-title">Авторизация</v-card-title>
             <v-card-text style="font-size: larger;">
-                <v-form ref = "form" v-model="valid">
-                    <v-text-field variant="underlined" label = "Email" v-model="email" :rules="emailRules" type="email" required class="v-text-field"/>
-                    <v-text-field variant="underlined" label = "Password" v-model="password" :rules="passwordRules" type="password" required class="v-text-field"/>
-                    <v-btn type = "submit" text = "Войти" color="primary" @click="login" :disabled="!valid"/>
+                <v-form ref = "form" v-model="valid" @submit.prevent="login">
+                    <v-text-field variant="underlined" label = "Email" v-model="email" :rules="emailRules"
+                        type="email" required class="v-text-field"/>
+                    <v-text-field variant="underlined" label = "Password" v-model="password" :rules="passwordRules"
+                        type="password" required class="v-text-field"/>
+                    <v-btn type = "submit" text = "Войти" color="primary" :disabled="!valid"/>
                 </v-form>
             </v-card-text>
         </v-card>
@@ -14,6 +16,9 @@
 </template>
 
 <script>
+    import axios from 'axios';
+    import router from '@/router';
+
     export default {
         data() {
             return {
@@ -31,9 +36,20 @@
             };
         },
         methods: {
-            login() {
+            async login() {
                 if (this.$refs.form.validate()) {
-                    this.$router.push('/home');
+                    alert('jahfsdkljfdshglkjhdfsg')
+                    try {
+                        const response = await axios.post('http://localhost:3001/login', {
+                            email: this.email,
+                            password: this.password
+                        });
+                        alert(response.data.message);
+                        router.push('/home');
+                    }
+                    catch (error) {
+                        alert(error.response ? error.response.data : 'Error occurred');
+                    }
                 }
             }
         }
