@@ -3,12 +3,12 @@
         <v-card>
             <v-card-title class="v-card-title">Авторизация</v-card-title>
             <v-card-text style="font-size: larger;">
-                <v-form ref = "form" v-model="valid">
+                <v-form ref = "form" v-model="valid" @submit.prevent="login">
                     <v-text-field variant="underlined" label = "Email" v-model="email" :rules="emailRules"
                         type="email" required class="v-text-field"/>
                     <v-text-field variant="underlined" label = "Password" v-model="password" :rules="passwordRules"
                         type="password" required class="v-text-field"/>
-                    <v-btn type = "submit" text = "Войти" color="primary" @click="login" :disabled="!valid"/>
+                    <v-btn type = "submit" text = "Войти" color="primary" :disabled="!valid"/>
                 </v-form>
             </v-card-text>
         </v-card>
@@ -17,6 +17,7 @@
 
 <script>
     import axios from 'axios';
+    import router from '@/router';
 
     export default {
         data() {
@@ -44,7 +45,7 @@
                             password: this.password
                         });
                         alert(response.data.message);
-                        this.$router.push('/home');
+                        router.push('/home');
                     }
                     catch (error) {
                         alert(error.response ? error.response.data : 'Error occurred');
