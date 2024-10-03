@@ -38,13 +38,11 @@
         methods: {
             async login() {
                 if (this.$refs.form.validate()) {
-                    alert('jahfsdkljfdshglkjhdfsg')
                     try {
                         const response = await axios.post('http://localhost:3001/login', {
                             email: this.email,
                             password: this.password
                         });
-                        alert(response.data.message);
                         router.push('/home');
                     }
                     catch (error) {
