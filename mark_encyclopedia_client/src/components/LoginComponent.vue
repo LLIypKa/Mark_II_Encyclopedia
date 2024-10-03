@@ -43,7 +43,10 @@
                             email: this.email,
                             password: this.password
                         });
-                        router.push('/home');
+                        if (response.status == 200 || response.status == 201) {
+                            router.push('/home');
+                        }
+                        
                     }
                     catch (error) {
                         alert(error.response ? error.response.data : 'Error occurred');
