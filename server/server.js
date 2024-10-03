@@ -2,11 +2,19 @@ const express = require('express');
 const sqlite = require('sqlite3').verbose();
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path')
 
 const app = express();
 const PORT = 3001;
 
-const db = new sqlite.Database(':memory:');
+const dbPath = path.resolve(__dirname, "database/base.db")
+const db = new sqlite.Database(dbPath, (err) => {
+    if (err) {
+        console.error('Ошибка при подключении к базе данных', err.message);
+    } else {
+        console.log('Подключено к базе данных SQLite');
+    }
+});
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -19,11 +27,22 @@ db.serialize(() => {
       password TEXT NOT NULL,
       name TEXT NOT NULL
     )
-  `);
+  `, (err) => {
+        if (err) {
+            console.error('Ошибка при создании таблицы:', err.message);
+        }
+    });
 });
 
-db.run(`INSERT INTO users (email, password, name) VALUES ('admin@yandex.ru', 'admin34', 'LLIypuK')`);
-db.run(`INSERT INTO users (email, password, name) VALUES ('callika@yandex.ru', 'admin35', 'LLIypKa')`);
+db.serialize(() => {
+    db.get("SELECT COUNT(*) AS count FROM users", (err, row) => {
+        if (row.count === 0) {
+            db.run(`INSERT INTO users (email, password, name) VALUES ('admin@yandex.ru', 'admin34', 'ApaXuc')`);
+            db.run(`INSERT INTO users (email, password, name) VALUES ('callika@yandex.ru', 'admin35', 'LLIypKa')`);
+            console.log('Тестовые пользователи добавлены');
+        }
+    });
+});
 
 app.post('/register', (req, res) => {
     const { email, password } = req.body;
