@@ -41,10 +41,7 @@
                     try {
                         const response = await axios.post('http://localhost:3001/login', {
                             email: this.email,
-                            password: this.password,
-                            Headers: {
-                                'authorization': `Bearer ${sessionStorage.getItem('token')}`
-                            }
+                            password: this.password
                         });
                         if (response.status == 200 || response.status == 201) {
                             let token = response.data.token;
