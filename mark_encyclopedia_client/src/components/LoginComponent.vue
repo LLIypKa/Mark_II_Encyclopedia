@@ -46,8 +46,6 @@
                         if (response.status == 200 || response.status == 201) {
                             let token = response.data.token;
                             sessionStorage.setItem('token', token);
-                            //alert('token' + response.data.token)
-                            alert(response.data.message);
                             router.push('/home');
                         }
                         
