@@ -10,13 +10,18 @@ const routes = [
   {
     path: '/home',
     name: 'home',
-    component: HomeView
-    //metadata: {requireAuth: false}
+    component: HomeView,
+    meta: {
+      requireAuth: true
+    }
   },
   {
     path: '/login',
     name: 'login',
-    component: LoginComponent
+    component: LoginComponent,
+    meta: {
+      quest: true
+    }
   },
   {
     path: '/about',
@@ -32,5 +37,27 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  const token = sessionStorage.getItem('token');
+
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (token == null) {
+      next({
+        path: '/login',
+        params: { nextUrl: to.fullPath }
+      });
+    }
+    else next();
+  }
+  else if (to.matched.some(record => record.meta.guest)) {
+    if (token != null) {
+      next({ path: '/home' });
+    } else {
+      next();
+    }
+  }
+  else next();
+});
 
 export default router
