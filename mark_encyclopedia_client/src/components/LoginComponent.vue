@@ -38,14 +38,17 @@
         methods: {
             async login() {
                 if (this.$refs.form.validate()) {
-                    alert('jahfsdkljfdshglkjhdfsg')
                     try {
                         const response = await axios.post('http://localhost:3001/login', {
                             email: this.email,
                             password: this.password
                         });
-                        alert(response.data.message);
-                        router.push('/home');
+                        if (response.status == 200 || response.status == 201) {
+                            let token = response.data.token;
+                            sessionStorage.setItem('token', token);
+                            router.push('/home');
+                        }
+                        
                     }
                     catch (error) {
                         alert(error.response ? error.response.data : 'Error occurred');
