@@ -38,7 +38,6 @@ app.post('/login', (req, res) => {
         }
         
         const token = createToken(user)
-        console.debug(token)
         res.status(200).send({ message: "Login successful", token, user });
     });
 });
