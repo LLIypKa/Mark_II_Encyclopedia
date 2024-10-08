@@ -7,7 +7,7 @@ const path = require('path')
 const app = express();
 const PORT = 3001;
 
-const db = require('./database/databaseConnection.js');
+const {db, createToken} = require('./database/databaseConnection.js');
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -36,8 +36,10 @@ app.post('/login', (req, res) => {
         if (user.password !== password) {
             return res.status(400).send("Invalid password or email.");
         }
-
-        res.status(200).send({ message: "Login successful", user });
+        
+        const token = createToken(user)
+        console.debug(token)
+        res.status(200).send({ message: "Login successful", token, user });
     });
 });
 

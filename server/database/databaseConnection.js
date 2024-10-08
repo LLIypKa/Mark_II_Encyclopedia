@@ -1,5 +1,7 @@
 const sqlite = require('sqlite3').verbose();
 const path = require('path');
+const jwt = require('jsonwebtoken');
+const { name } = require('body-parser');
 
 const dbPath = path.resolve(__dirname, "base.db")
 const db = new sqlite.Database(dbPath, (err) => {
@@ -35,4 +37,19 @@ db.serialize(() => {
     });
 });
 
-module.exports = db;
+function createToken(user) {
+    const payload = { 
+        id: user.id, 
+        email: user.email, 
+        name: user.name 
+    };
+
+    const token = jwt.sign(payload, 'hihihaha_MARK_II_Ha_CTOJl6e', { expiresIn: '1h' })
+    return token;
+}
+
+/*const createToken = (user) => {
+    return jwt.sign({ id: user.id, email: user.email, name: user.name }, 'hihihaha_MARK_II_Ha_CTOJl6e', { expiresIn: '1h' });
+};*/
+
+module.exports = { db, createToken };
