@@ -20,6 +20,9 @@
     import router from '@/router';
 
     export default {
+        created() {
+            sessionStorage.removeItem('token'); // Удаление токена
+        },
         data() {
             return {
                 email: "",
