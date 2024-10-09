@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginComponent from '@/components/LoginComponent.vue'
+import RegistrationComponent from '@/components/RegistrationComponent.vue'
 
 const routes = [
   {
@@ -19,6 +20,14 @@ const routes = [
     path: '/login',
     name: 'login',
     component: LoginComponent,
+    meta: {
+      quest: true
+    }
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: RegistrationComponent,
     meta: {
       quest: true
     }

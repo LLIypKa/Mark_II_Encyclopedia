@@ -1,16 +1,16 @@
 <template>
     <v-container class="transparentForm">
         <v-card>
-            <v-card-title class="v-card-title">Авторизация</v-card-title>
+            <v-card-title class="v-card-title">Регистрация</v-card-title>
             <v-card-text style="font-size: larger;">
-                <v-form ref = "form" v-model="valid" @submit.prevent="login">
-                    <v-text-field variant="underlined" label = "Email" v-model="email" :rules="emailRules"
+                <v-form ref = "form" v-model="valid" @submit.prevent="register">
+                    <v-text-field variant="underlined" label = "Имя" v-model="name" :rules="nameRules"
+                        type="email" required class="v-text-field" placeholder="Кто ты, воин?"/>
+                    <v-text-field variant="underlined" label = "Почта" v-model="email" :rules="emailRules"
                         type="email" required class="v-text-field"/>
-                    <v-text-field variant="underlined" label = "Password" v-model="password" :rules="passwordRules"
+                    <v-text-field variant="underlined" label = "Пароль" v-model="password" :rules="passwordRules"
                         type="password" required class="v-text-field"/>
-                    <v-btn type = "submit" text = "Войти" color="primary" :disabled="!valid"/>
-                    <br>
-                    <v-btn type = "button" text = "Зарегистрироваться" :onClick = "toRegister()"/>
+                    <v-btn type = "submit" text = "Зарегистрироваться" color="primary" :disabled="!valid"/>
                 </v-form>
             </v-card-text>
         </v-card>
@@ -27,6 +27,7 @@
         },
         data() {
             return {
+                name: "",
                 email: "",
                 password: "",
                 valid: false,
@@ -38,20 +39,23 @@
                     v => !!v || "Пароль обязателен",
                     v => (v.length >= 6) || "Пароль должен быть длинее 6 символов",
                 ],
+                nameRules: [
+                    v => !!v || "Назови себя",
+                    v=> (v.length >= 3) || "Имя должно быть длинне 3 букв"
+                ]
             };
         },
         methods: {
-            async login() {
+            async register() {
                 if (this.$refs.form.validate()) {
                     try {
-                        const response = await axios.post('http://localhost:3001/login', {
+                        const response = await axios.post('http://localhost:3001/register', {
                             email: this.email,
-                            password: this.password
+                            password: this.password,
+                            name: this.name
                         });
-                        if (response.status == 200 || response.status == 201) {
-                            let token = response.data.token;
-                            sessionStorage.setItem('token', token);
-                            router.push('/home');
+                        if (response.status == 201) {
+                            router.push('/login');
                         }
                         
                     }
@@ -59,10 +63,7 @@
                         alert(error.response ? error.response.data : 'Error occurred');
                     }
                 }
-            },
-            async toRegister() {
-                router.push('/register');
-            } 
+            }
         }
     }
 </script>
