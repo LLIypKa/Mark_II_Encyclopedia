@@ -10,7 +10,12 @@ import HelloWorld from '../components/HelloWorld.vue';
 
 export default defineComponent({
   name: 'HomeView',
-
+  mounted() {
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      this.$router.push('/login');
+    }
+  },
   components: {
     HelloWorld,
   },
