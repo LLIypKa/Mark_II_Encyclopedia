@@ -22,9 +22,9 @@ export default {
 
 <style scoped>
 .v-main {
+  background-position: left bottom;
   background-size: cover;
-  background-position: center;
   background-repeat: no-repeat;
-  height: 100vh;
+  background-attachment: fixed;
 }
 </style>
