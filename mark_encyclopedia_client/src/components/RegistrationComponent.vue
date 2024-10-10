@@ -54,7 +54,9 @@
                             password: this.password,
                             name: this.name
                         });
+                        alert(response.status)
                         if (response.status == 201) {
+                            alert("jkshdfkjhasdkjlfhkjsadhf")
                             router.push('/login');
                         }
                         

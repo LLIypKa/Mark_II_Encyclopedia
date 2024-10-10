@@ -9,9 +9,8 @@
                     <v-text-field variant="underlined" label = "Password" v-model="password" :rules="passwordRules"
                         type="password" required class="v-text-field"/>
                     <v-btn type = "submit" text = "Войти" color="primary" :disabled="!valid"/>
-                    <br>
-                    <v-btn type = "button" text = "Зарегистрироваться" :onClick = "toRegister()"/>
                 </v-form>
+                <v-btn type = "button" text = "Зарегистрироваться" :onClick = "toRegister()"/>
             </v-card-text>
         </v-card>
     </v-container>
@@ -62,7 +61,7 @@
             },
             async toRegister() {
                 router.push('/register');
-            } 
+            }
         }
     }
 </script>

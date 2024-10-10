@@ -1,12 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginComponent from '@/components/LoginComponent.vue'
-import RegistrationComponent from '@/components/RegistrationComponent.vue'
+//import RegistrationComponent from '@/components/RegistrationComponent.vue'
 
 const routes = [
   {
     path: '/',
-    redirect: '/login'
+    redirect: () => {
+      const token = sessionStorage.getItem('token');
+      return token ? '/home' : '/login';
+    }
   },
   {
     path: '/home',
@@ -24,14 +27,14 @@ const routes = [
       quest: true
     }
   },
-  {
+  /*{
     path: '/register',
     name: 'register',
     component: RegistrationComponent,
     meta: {
       quest: true
     }
-  },
+  },*/
   {
     path: '/about',
     name: 'about',
@@ -53,7 +56,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const token = sessionStorage.getItem('token');
 
-  if (to.name === 'login') {
+  if (to.name == 'login') {
     sessionStorage.removeItem('token');
   }
 
