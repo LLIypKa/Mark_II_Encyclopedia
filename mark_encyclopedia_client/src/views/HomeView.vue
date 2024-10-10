@@ -6,7 +6,7 @@
 import { defineComponent } from 'vue';
 
 // Components
-import HelloWorld from '../components/Home.vue';
+import HelloWorld from '../components/home/Home.vue';
 
 export default defineComponent({
   name: 'HomeView',
