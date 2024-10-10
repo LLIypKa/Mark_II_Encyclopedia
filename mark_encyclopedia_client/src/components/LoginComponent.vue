@@ -10,7 +10,7 @@
                         type="password" required class="v-text-field"/>
                     <v-btn type = "submit" text = "Войти" color="primary" :disabled="!valid"/>
                 </v-form>
-                <v-btn type = "button" text = "Зарегистрироваться" :onClick = "toRegister()"/>
+                <v-btn type = "button" text = "Зарегистрироваться" @click = "toRegister()"/>
             </v-card-text>
         </v-card>
     </v-container>
@@ -22,7 +22,7 @@
 
     export default {
         created() {
-            sessionStorage.removeItem('token'); // Удаление токена
+            sessionStorage.removeItem('token'); 
         },
         data() {
             return {
