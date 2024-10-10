@@ -13,11 +13,12 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.post('/register', (req, res) => {
-    const { email, password } = req.body;
-    const sql = "INSERT INTO users (email, password) VALUES (?, ?)";
+    const { email, password, name } = req.body;
+    const sql = "INSERT INTO users (email, password, name) VALUES (?, ?, ?)";
 
-    db.run(sql, [email, password], function (err) {
+    db.run(sql, [email, password, name], function (err) {
         if (err) {
+            console.log(email + ' ' + password + ' ' + name)
             return res.status(400).send("User already exists or invalid input.");
         }
         res.status(201).send({ id: this.lastID, email });

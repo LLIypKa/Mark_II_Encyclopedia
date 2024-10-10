@@ -1,11 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import LoginComponent from '@/components/LoginComponent.vue'
+import LoginComponent from '../components/LoginComponent.vue'
+import RegistrationComponent from '@/components/RegistrationComponent.vue'
 
 const routes = [
   {
     path: '/',
-    redirect: '/login'
+    redirect: () => {
+      const token = sessionStorage.getItem('token');
+      return token ? '/home' : '/login';
+    }
   },
   {
     path: '/home',
@@ -24,14 +28,11 @@ const routes = [
     }
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue'),
+    path: '/register',
+    name: 'register',
+    component: RegistrationComponent,
     meta: {
-      requireAuth: true
+      quest: true
     }
   }
 ]
@@ -44,7 +45,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const token = sessionStorage.getItem('token');
 
-  if (to.name === 'login') {
+  if (to.name == 'login') {
     sessionStorage.removeItem('token');
   }
 
