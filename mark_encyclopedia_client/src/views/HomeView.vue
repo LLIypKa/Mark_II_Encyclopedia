@@ -1,12 +1,14 @@
 <template>
-  <HelloWorld />
+  <div :style="mainDiv">
+    <MainHomeComponent/>
+  </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
 
 // Components
-import HelloWorld from '../components/home/Home.vue';
+import MainHomeComponent from '../components/home/MainHome.vue';
 
 export default defineComponent({
   name: 'HomeView',
@@ -17,7 +19,14 @@ export default defineComponent({
     }
   },
   components: {
-    HelloWorld,
+    MainHomeComponent,
   },
 });
 </script>
+
+<style lang="css" scoped>
+  .mainDiv {
+    align-content: center;
+    justify-content: space-between;
+  }
+</style>
