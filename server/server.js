@@ -11,6 +11,7 @@ const app = express();
 const PORT = 3001;
 
 const {db, createToken, key} = require('./database/databaseConnection.js');
+const { error } = require('console');
 
 const profilePhotoStorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -92,6 +93,7 @@ app.get('/profile-photo', authToken, (req, res) => {
     const sql = "SELECT profile_photo_path FROM users WHERE id = ?";
     db.get(sql, [userId], (err, row) => {
         if (err || !row || !row.profile_photo_path) {
+            console.error(err);
             return res.status(404).send("Profile photo not found.");
         }
 

@@ -38,8 +38,8 @@ db.serialize(() => {
 db.serialize(() => {
     db.get("SELECT COUNT(*) AS count FROM users", (err, row) => {
         if (row.count === 0) {
-            db.run(`INSERT INTO users (email, password, name, profile_photo_path) VALUES ('admin@yandex.ru', 'admin34', 'ApaXuc','../profilePhotos/templateProfilePhoto.jpg')`);
-            db.run(`INSERT INTO users (email, password, name, profile_photo_path) VALUES ('callika@yandex.ru', 'admin35', 'LLIypKa','../profilePhotos/templateProfilePhoto.jpg')`);
+            db.run(`INSERT INTO users (email, password, name, profile_photo_path) VALUES ('admin@yandex.ru', 'admin34', 'ApaXuc','../Mark_II_Encyclopedia/server/profilePhotos/templateProfilePhoto.jpg')`);
+            db.run(`INSERT INTO users (email, password, name, profile_photo_path) VALUES ('callika@yandex.ru', 'admin35', 'LLIypKa','../Mark_II_Encyclopedia/server/profilePhotos/templateProfilePhoto.jpg')`);
             console.log('Тестовые пользователи добавлены');
         }
     });

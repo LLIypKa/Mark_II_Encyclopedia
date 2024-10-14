@@ -1,5 +1,6 @@
 <template>
-  <div :style="mainDiv">
+  <div class="mainDiv">
+    <PhotoAndMainCommandsAsideComponent/>
     <MainHomeComponent/>
   </div>
 </template>
@@ -9,6 +10,7 @@ import { defineComponent } from 'vue';
 
 // Components
 import MainHomeComponent from '../components/home/MainHome.vue';
+import PhotoAndMainCommandsAsideComponent from '../components/home/PhotoAndMainCommandsAside.vue'
 
 export default defineComponent({
   name: 'HomeView',
@@ -20,13 +22,15 @@ export default defineComponent({
   },
   components: {
     MainHomeComponent,
+    PhotoAndMainCommandsAsideComponent
   },
 });
 </script>
 
 <style lang="css" scoped>
   .mainDiv {
-    align-content: center;
+    display: flex;
     justify-content: space-between;
+    align-items: flex-start;
   }
 </style>
