@@ -1,6 +1,6 @@
 <template>
   <div class="mainDiv">
-    <PhotoAndMainCommandsAsideComponent/>
+    <PhotoAndMainCommandsAsideComponent style="width: 30%;"/>
     <MainHomeComponent/>
   </div>
 </template>
@@ -32,5 +32,6 @@ export default defineComponent({
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    font-family: 'Gabriola';
   }
 </style>
