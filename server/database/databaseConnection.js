@@ -2,8 +2,15 @@ const sqlite = require('sqlite3').verbose();
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const { name } = require('body-parser');
+const multer = require('multer');
+const fs = require('fs');
 
 const dbPath = path.resolve(__dirname, "base.db")
+const profilePhotosFolder = './profilePhotos/';
+if (!fs.existsSync(profilePhotosFolder)) {
+    fs.mkdirSync(profilePhotosFolder);
+}
+
 const db = new sqlite.Database(dbPath, (err) => {
     if (err) {
         console.error('Ошибка при подключении к базе данных', err.message);
@@ -18,7 +25,8 @@ db.serialize(() => {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email TEXT NOT NULL UNIQUE,
       password TEXT NOT NULL,
-      name TEXT NOT NULL
+      name TEXT NOT NULL,
+      profile_photo_path TEXT
     )
   `, (err) => {
         if (err) {
@@ -30,12 +38,14 @@ db.serialize(() => {
 db.serialize(() => {
     db.get("SELECT COUNT(*) AS count FROM users", (err, row) => {
         if (row.count === 0) {
-            db.run(`INSERT INTO users (email, password, name) VALUES ('admin@yandex.ru', 'admin34', 'ApaXuc')`);
-            db.run(`INSERT INTO users (email, password, name) VALUES ('callika@yandex.ru', 'admin35', 'LLIypKa')`);
+            db.run(`INSERT INTO users (email, password, name, profile_photo_path) VALUES ('admin@yandex.ru', 'admin34', 'ApaXuc','../profilePhotos/templateProfilePhoto.jpg')`);
+            db.run(`INSERT INTO users (email, password, name, profile_photo_path) VALUES ('callika@yandex.ru', 'admin35', 'LLIypKa','../profilePhotos/templateProfilePhoto.jpg')`);
             console.log('Тестовые пользователи добавлены');
         }
     });
 });
+
+const key = 'XuXuXaXa_MARK_II_B_TToucKax_CTOJl6a';
 
 function createToken(user) {
     const payload = { 
@@ -44,12 +54,8 @@ function createToken(user) {
         name: user.name 
     };
 
-    const token = jwt.sign(payload, 'hihihaha_MARK_II_Ha_CTOJl6e', { expiresIn: '1h' })
+    const token = jwt.sign(payload, key, { expiresIn: '1h' })
     return token;
 }
 
-/*const createToken = (user) => {
-    return jwt.sign({ id: user.id, email: user.email, name: user.name }, 'hihihaha_MARK_II_Ha_CTOJl6e', { expiresIn: '1h' });
-};*/
-
-module.exports = { db, createToken };
+module.exports = { db, createToken, key };
