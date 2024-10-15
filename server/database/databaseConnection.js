@@ -36,6 +36,21 @@ db.serialize(() => {
 });
 
 db.serialize(() => {
+    db.run(`CREATE TABLE IF NOT EXISTS articles (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        text_content TEXT NOT NULL,
+        author_id INTEGER,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (author_id) REFERENCES users(id)
+    )`, (err) => {
+        if (err) {
+            console.error('Ошибка при создании таблицы:', err.message);
+        }
+    });
+});
+
+db.serialize(() => {
     db.get("SELECT COUNT(*) AS count FROM users", (err, row) => {
         if (row.count === 0) {
             db.run(`INSERT INTO users (email, password, name, profile_photo_path) VALUES ('admin@yandex.ru', 'admin34', 'ApaXuc','../Mark_II_Encyclopedia/server/profilePhotos/templateProfilePhoto.jpg')`);
