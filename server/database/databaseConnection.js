@@ -52,6 +52,25 @@ db.serialize(() => {
 });
 
 db.serialize(() => {
+    db.run(`CREATE TABLE IF NOT EXISTS comments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        article_id INTEGER NOT NULL,
+        author_id INTEGER NOT NULL,
+        text_content TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        parent_comment_id INTEGER,
+        FOREIGN KEY (author_id) REFERENCES users(id),
+        FOREIGN KEY (article_id) REFERENCES articles(id),
+        FOREIGN KEY (parent_comment_id) REFERENCES comments(id)
+    )`, (err) => {
+        if (err) {
+            console.error('Ошибка при создании таблицы:', err.message);
+        }
+    });
+});
+
+
+db.serialize(() => {
     db.get("SELECT COUNT(*) AS count FROM users", (err, row) => {
         if (row.count === 0) {
             db.run(`INSERT INTO users (email, password, name, profile_photo_path, users_status_text) VALUES ('admin@yandex.ru', 'admin34', 'ApaXuc','../Mark_II_Encyclopedia/server/profilePhotos/templateProfilePhoto.jpg', 'Несколько раз намотался на столб =)')`);
@@ -69,8 +88,19 @@ db.serialize(() => {
             db.run(`INSERT INTO articles (title, text_content, author_id, created_at) VALUES ('Напутствие', 'У самурая нет цели - есть только путь', 2, '${currentDate}')`);
             console.log('Тестовые статьи добавлены');
         }
-    })
-})
+    });
+});
+
+db.serialize(() => {
+    db.get("SELECT COUNT(*) AS count FROM comments", (err, rows) => {
+        if (rows.count == 0) {
+            const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            db.run(`INSERT INTO comments (article_id, author_id, text_content, created_at) VALUES (1, 2, 'Столб найден', '${currentDate}')`);
+            db.run(`INSERT INTO comments (article_id, author_id, text_content, created_at) VALUES (2, 1, 'Ведь путь самурая - это, по сути, его цель? Не так ли?', '${currentDate}')`);
+            console.log('Тестовые комментарии добавлены');
+        }
+    });
+});
 
 const key = 'XuXuXaXa_MARK_II_B_TToucKax_CTOJl6a';
 
