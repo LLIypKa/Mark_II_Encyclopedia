@@ -61,6 +61,16 @@ db.serialize(() => {
     });
 });
 
+db.serialize(() => {
+    db.get("SELECT COUNT(*) AS count FROM articles", (err, rows) => {
+        if (rows.count == 0) {
+            db.run(`INSERT INTO articels (title, text_content, author_id, created_at) VALUES ('Приветствие', 'ХИХИХАХА, марк 2 в поисках столба', 1, ${new Date()})`);
+            db.run(`INSERT INTO articels (title, text_content, author_id, created_at) VALUES ('Напутствие', 'У самурая нет цели - есть только путь', 2, ${new Date()})`);
+            console.log('Тестовые статьи добавлены');
+        }
+    })
+})
+
 const key = 'XuXuXaXa_MARK_II_B_TToucKax_CTOJl6a';
 
 function createToken(user) {
