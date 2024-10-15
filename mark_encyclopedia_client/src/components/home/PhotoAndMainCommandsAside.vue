@@ -103,12 +103,12 @@
   }
 
   .createNewStateBtn {
-    margin: 5% 1% 5% 1%;
+    margin: 4% 1% 4% 1%;
   }
 
   .logoutButtonBtn {
     background: linear-gradient(to right, #FF5555, 50%, #993333);
-    margin: 5% 1% 5% 1%;
+    margin: 4% 1% 4% 1%;
   }
 
   .profilePhoto {
