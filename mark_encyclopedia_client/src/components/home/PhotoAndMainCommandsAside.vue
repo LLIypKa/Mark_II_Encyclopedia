@@ -9,7 +9,9 @@
           <v-text-field placeholder="Введите название статьи" v-model="stateName" hide-details="true" class="v-text-field"/>
         </v-form>
         <label class="labelInInputDiv">Последние статьи</label>
-        <a>klajshdfkjashdfk</a>
+        <a class="a">История маркообразных. Часть 2</a>
+        <a class="a">Как я марка из Японии возил =)</a>
+        <a class="a">Двигатель 1jz-gte. Часть 1. Строение</a>
       </div>
     </v-container>
 </template>
@@ -78,7 +80,7 @@
     flex-direction: column; 
     justify-content: left; 
     align-items: flex-start;
-    text-align: center; 
+    text-align: left; 
     margin-top: 2%;
     margin-bottom: 2%;
     padding: 2% 2% 2% 2%;
@@ -130,4 +132,12 @@
     font-size: large;
   }
 
+  .a {
+    background: linear-gradient(to right, #2042ff, 50%, #b200ff);
+    color: #ffffff;
+    font-size: 3vh;
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 1%;
+  }
 </style>
