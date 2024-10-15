@@ -8,8 +8,9 @@
         <v-form ref="form">
           <v-text-field placeholder="Введите название статьи" v-model="stateName" hide-details="true" class="v-text-field"/>
         </v-form>
-        <label class="labe">Последние статьи</label>
-        </div>
+        <label class="labelInInputDiv">Последние статьи</label>
+        <a>klajshdfkjashdfk</a>
+      </div>
     </v-container>
 </template>
 
@@ -65,44 +66,53 @@
   }
 
   .profilePhotoDiv {
-    display: flex; /* Используем flexbox */
-    flex-direction: column; /* Строки по вертикали */
-    justify-content: center; /* Центрируем по вертикали */
-    align-items: center; /* Центрируем по горизонтали */
-    text-align: center; /* Центрируем текст */
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    text-align: center; 
   }
 
   .inputDiv {
     display: flex; 
     flex-direction: column; 
     justify-content: left; 
-    align-items: flex-start; /* Центрируем по горизонтали */
-    text-align: center; /* Центрируем текст */
+    align-items: flex-start;
+    text-align: center; 
     margin-top: 2%;
     margin-bottom: 2%;
     padding: 2% 2% 2% 2%;
   }
 
   .profilePhoto {
-    width: 90%;
+    width: 80%;
     margin: 5% 5% 0% 5%;
     border-radius: 5px;
   }
+
   .label {
     align-items: center;
     color: #ffffff;
-    font-size: 30px;
+    font-size: 3vh;
+  }
+
+  .labelInInputDiv {
+    align-items: center;
+    color: #ffffff;
+    font-size: 3vh;
   }
 
   .v-text-field {
-    width: 100%;
-    max-width: 100%;
-    background: #ffffff;
+    width: 232%;
+    max-height: 50%;
+    border-radius: 5px;
+    background: linear-gradient(to right, #2042ff, 50%, #b200ff);
     border: none;
-    color: #000000;
+    color: #ffffff;
     box-sizing: border-box;
     margin: 1% 1% 1% 1%;
   }
+
   .v-text-field >>> input {
     width: calc(100%-20px);
     font-size: 3vh;
