@@ -6,9 +6,13 @@ const multer = require('multer');
 const fs = require('fs');
 
 const dbPath = path.resolve(__dirname, "base.db")
-const profilePhotosFolder = './profilePhotos/';
+const profilePhotosFolder = '/profilePhotos/';
 if (!fs.existsSync(profilePhotosFolder)) {
     fs.mkdirSync(profilePhotosFolder);
+}
+const usersStatusPhotos = '/usersStatusPhotos/';
+if (!fs.existsSync(usersStatusPhotos)) {
+    fs.mkdirSync(usersStatusPhotos);
 }
 
 const db = new sqlite.Database(dbPath, (err) => {
@@ -69,6 +73,21 @@ db.serialize(() => {
     });
 });
 
+db.serialize(() => {
+    db.run(`
+    CREATE TABLE IF NOT EXISTS users_status_photos (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      photo_path TEXT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id)
+    )
+  `, (err) => {
+        if (err) {
+            console.error('Ошибка при создании таблицы:', err.message);
+        }
+    });
+});
+
 
 db.serialize(() => {
     db.get("SELECT COUNT(*) AS count FROM users", (err, row) => {
@@ -101,6 +120,17 @@ db.serialize(() => {
         }
     });
 });
+
+db.serialize(() => {
+    db.get("SELECT COUNT(*) AS count FROM users_status_photos", (err, rows) => {
+        if (rows.count == 0) {
+            db.run(`INSERT INTO users_status_photos (user_id, photo_path) VALUES (1, '../Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
+            db.run(`INSERT INTO users_status_photos (user_id, photo_path) VALUES (2, '../Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
+            console.log('Тестовые фото для статусов добавлены');
+        }
+    });
+});
+
 
 const key = 'XuXuXaXa_MARK_II_B_TToucKax_CTOJl6a';
 
