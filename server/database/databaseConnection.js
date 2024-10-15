@@ -64,8 +64,9 @@ db.serialize(() => {
 db.serialize(() => {
     db.get("SELECT COUNT(*) AS count FROM articles", (err, rows) => {
         if (rows.count == 0) {
-            db.run(`INSERT INTO articels (title, text_content, author_id, created_at) VALUES ('Приветствие', 'ХИХИХАХА, марк 2 в поисках столба', 1, ${new Date()})`);
-            db.run(`INSERT INTO articels (title, text_content, author_id, created_at) VALUES ('Напутствие', 'У самурая нет цели - есть только путь', 2, ${new Date()})`);
+            const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            db.run(`INSERT INTO articles (title, text_content, author_id, created_at) VALUES ('Приветствие', 'ХИХИХАХА, марк 2 в поисках столба', 1, '${currentDate}')`);
+            db.run(`INSERT INTO articles (title, text_content, author_id, created_at) VALUES ('Напутствие', 'У самурая нет цели - есть только путь', 2, '${currentDate}')`);
             console.log('Тестовые статьи добавлены');
         }
     })
