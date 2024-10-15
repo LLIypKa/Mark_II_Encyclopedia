@@ -13,6 +13,11 @@
         <a class="a">Как я марка из Японии возил =)</a>
         <a class="a">Двигатель 1jz-gte. Часть 1. Строение</a>
       </div>
+      <div class = "commandsDiv">
+        <v-btn type = "button" class="logoutButtonBtn">Выйти</v-btn>
+        <v-btn type = "button" class="changePersonalDataBtn">Изменить данные</v-btn>
+        <v-btn type = "button" class="createNewStateBtn">Создать статью</v-btn>
+      </div>
     </v-container>
 </template>
 
@@ -60,14 +65,14 @@
 
 
 <style lang="css" scoped>
-  .generalDiv, .profilePhotoDiv, .inputDiv {
+  .generalDiv, .profilePhotoDiv, .inputDiv, .commandsDiv {
     width: 100%;
     background: rgba( 0,0,0,.6);
     border-radius: 5px;
     backdrop-filter: blur(2px);
   }
 
-  .profilePhotoDiv {
+  .profilePhotoDiv, .commandsDiv {
     display: flex; 
     flex-direction: column; 
     justify-content: center; 
@@ -84,6 +89,26 @@
     margin-top: 2%;
     margin-bottom: 2%;
     padding: 2% 2% 2% 2%;
+  }
+
+  .logoutButtonBtn, .createNewStateBtn, .changePersonalDataBtn {
+    color: #ffffff;
+    width: 80%;
+    max-width: 100%;
+    font-size: 3vh;
+  }
+
+  .createNewStateBtn, .changePersonalDataBtn {
+    background: linear-gradient(to right, #37FF70, 50%, #0A7127);
+  }
+
+  .createNewStateBtn {
+    margin: 5% 1% 5% 1%;
+  }
+
+  .logoutButtonBtn {
+    background: linear-gradient(to right, #FF5555, 50%, #993333);
+    margin: 5% 1% 5% 1%;
   }
 
   .profilePhoto {
