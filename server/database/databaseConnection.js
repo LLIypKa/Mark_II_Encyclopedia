@@ -26,7 +26,8 @@ db.serialize(() => {
       email TEXT NOT NULL UNIQUE,
       password TEXT NOT NULL,
       name TEXT NOT NULL,
-      profile_photo_path TEXT
+      profile_photo_path TEXT,
+      users_status_text TEXT
     )
   `, (err) => {
         if (err) {
