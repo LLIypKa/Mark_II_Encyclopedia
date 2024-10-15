@@ -112,7 +112,7 @@ app.get('/users-status', authToken, (req, res) => {
             return res.status(404).send("Status not found.");
         }
         
-        res,sendStatus(200).send({usersStatus: row.users_status_text});
+        res.status(200).send(row.users_status_text);
     });
 });
 

@@ -30,7 +30,7 @@ export default defineComponent({
 <style lang="css" scoped>
   .mainDiv {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: flex-start;
     font-family: 'Gabriola';
   }
