@@ -102,6 +102,20 @@ app.get('/profile-photo', authToken, (req, res) => {
     });
 });
 
+app.get('/users-status', authToken, (req, res) => {
+    const userId = req.user.id;
+
+    const sql = "SELECT users_status_text FROM users WHERE id = ?";
+    db.get(sql, [userId], (err, row) => {
+        if (err || !row || !row.users_status_text) {
+            console.error(err);
+            return res.status(404).send("Status not found.");
+        }
+        
+        res,sendStatus(200).send({usersStatus: row.users_status_text});
+    })
+})
+
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
