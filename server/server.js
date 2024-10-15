@@ -113,8 +113,8 @@ app.get('/users-status', authToken, (req, res) => {
         }
         
         res,sendStatus(200).send({usersStatus: row.users_status_text});
-    })
-})
+    });
+});
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
