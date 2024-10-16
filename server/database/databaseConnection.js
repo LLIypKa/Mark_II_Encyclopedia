@@ -14,6 +14,10 @@ const usersStatusPhotos = '/usersStatusPhotos/';
 if (!fs.existsSync(usersStatusPhotos)) {
     fs.mkdirSync(usersStatusPhotos);
 }
+const usersCarsPhotos = '/usersCarsPhotos/';
+if (!fs.existsSync(usersCarsPhotos)) {
+    fs.mkdirSync(usersCarsPhotos);
+}
 
 const db = new sqlite.Database(dbPath, (err) => {
     if (err) {
@@ -91,11 +95,11 @@ db.serialize(() => {
 
 db.serialize(() => {
     db.run(
-        `CREATE TABLE IF NOT EXISTS full_desc_photos_pathes (
+        `CREATE TABLE IF NOT EXISTS car_desc_photos_pathes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             users_id INTEGER NOT NULL,
             photo_path TEXT NOT NULL,
-            FORIGN KEY (users_id) REFERENCES users(id) 
+            FOREIGN KEY (users_id) REFERENCES users(id) 
         )`,
     (err) => {
         if (err) {
@@ -158,13 +162,22 @@ db.serialize(() => {
 db.serialize(() => {
     db.get("SELECT COUNT(*) AS count FROM users_status_photos", (err, rows) => {
         if (rows.count == 0) {
+            db.run(`INSERT INTO car_desc_photos_pathes (user_id, photo_path) VALUES (1, '../Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
+            db.run(`INSERT INTO car_desc_photos_pathes (user_id, photo_path) VALUES (2, '../Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
+            console.log('Тестовые фото для статусов добавлены');
+        }
+    });
+});
+
+db.serialize(() => {
+    db.get("SELECT COUNT(*) AS count FROM users_status_photos", (err, rows) => {
+        if (rows.count == 0) {
             db.run(`INSERT INTO users_status_photos (user_id, photo_path) VALUES (1, '../Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
             db.run(`INSERT INTO users_status_photos (user_id, photo_path) VALUES (2, '../Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
             console.log('Тестовые фото для статусов добавлены');
         }
     });
 });
-
 
 const key = 'XuXuXaXa_MARK_II_B_TToucKax_CTOJl6a';
 
