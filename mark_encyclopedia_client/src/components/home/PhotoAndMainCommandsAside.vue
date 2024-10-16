@@ -30,7 +30,7 @@
     
     data() {
       return {
-        token: sessionStorage.getItem("token"),
+        token: sessionStorage.getItem("token") == null ? null : sessionStorage.getItem("token"),
         profilePhotoUrl: null,
         id: null,
         stateName: null
@@ -42,17 +42,19 @@
     },
     methods: {
       async getProfilePhoto() {
-        try {
-          const response = await axios.get(`http://localhost:3001/profile-photo`, {
-            headers: {
-              'Authorization': `Bearer ${this.token}`
-            },
-            responseType: 'blob'
-          });
-          this.profilePhotoUrl = URL.createObjectURL(response.data);
-        }
-        catch (error) {
-          alert(`Не удалось загрузить фото профиля - ${error}`)
+        if (this.token != null) {
+          try {
+            const response = await axios.get(`http://localhost:3001/profile-photo`, {
+              headers: {
+                'Authorization': `Bearer ${this.token}`
+              },
+              responseType: 'blob'
+            });
+            this.profilePhotoUrl = URL.createObjectURL(response.data);
+          }
+          catch (error) {
+            alert(`Не удалось загрузить фото профиля - ${error}`)
+          }
         }
       },
       async getUserId() {
@@ -93,8 +95,9 @@
 
   .logoutButtonBtn, .createNewStateBtn, .changePersonalDataBtn {
     color: #ffffff;
-    width: 80%;
+    width: 90%;
     max-width: 100%;
+    min-height: 4vh;
     font-size: 3vh;
   }
 
