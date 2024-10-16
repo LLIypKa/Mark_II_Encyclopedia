@@ -14,6 +14,10 @@ const usersStatusPhotos = '/usersStatusPhotos/';
 if (!fs.existsSync(usersStatusPhotos)) {
     fs.mkdirSync(usersStatusPhotos);
 }
+const usersCarsPhotos = '/usersCarsPhotos/';
+if (!fs.existsSync(usersCarsPhotos)) {
+    fs.mkdirSync(usersCarsPhotos);
+}
 
 const db = new sqlite.Database(dbPath, (err) => {
     if (err) {
@@ -31,7 +35,8 @@ db.serialize(() => {
       password TEXT NOT NULL,
       name TEXT NOT NULL,
       profile_photo_path TEXT,
-      users_status_text TEXT
+      users_status_text TEXT,
+      users_car_desc TEXT
     )
   `, (err) => {
         if (err) {
@@ -88,12 +93,45 @@ db.serialize(() => {
     });
 });
 
+db.serialize(() => {
+    db.run(
+        `CREATE TABLE IF NOT EXISTS car_desc_photos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            users_id INTEGER NOT NULL,
+            photo_path TEXT NOT NULL,
+            FOREIGN KEY (users_id) REFERENCES users(id) 
+        )`,
+    (err) => {
+        if (err) {
+            console.error('Ошибка при создании таблицы:', err.message);
+        }
+    });
+})
 
 db.serialize(() => {
     db.get("SELECT COUNT(*) AS count FROM users", (err, row) => {
         if (row.count === 0) {
-            db.run(`INSERT INTO users (email, password, name, profile_photo_path, users_status_text) VALUES ('admin@yandex.ru', 'admin34', 'ApaXuc','../Mark_II_Encyclopedia/server/profilePhotos/templateProfilePhoto.jpg', 'Несколько раз намотался на столб =)')`);
-            db.run(`INSERT INTO users (email, password, name, profile_photo_path, users_status_text) VALUES ('callika@yandex.ru', 'admin35', 'LLIypKa','../Mark_II_Encyclopedia/server/profilePhotos/templateProfilePhoto.jpg', 'Ни столба тебе, ни жезла, самурай')`);
+            const userDesc = 'Мой \'последний самурай\': \n1jz-gte (турбина, 280 л.с.), диски - \“Крутые диски\”';
+            db.run(`INSERT INTO users (email, password, name, profile_photo_path, users_status_text, users_car_desc) VALUES (?, ?, ?, ?, ?, ?)`,
+                ['admin@yandex.ru', 'admin34', 'ApaXuc', '../Mark_II_Encyclopedia/server/profilePhotos/templateProfilePhoto.jpg', 'Несколько раз намотался на столб =)', userDesc],
+                (err) => {
+                    if (err) {
+                        console.error('Ошибка при добавлении данных в таблицу users:', err.message);
+                    } else {
+                        console.log('Пользователь успешно добавлен');
+                    }
+            });
+            db.run(`INSERT INTO users (email, password, name, profile_photo_path, users_status_text, users_car_desc) 
+            VALUES (?, ?, ?, ?, ?, ?)`,
+                ['callika@yandex.ru', 'admin35', 'LLIypKa', '../Mark_II_Encyclopedia/server/profilePhotos/templateProfilePhoto.jpg',
+                    'Ни столба тебе, ни жезла, самурай', userDesc],
+                (err) => {
+                    if (err) {
+                        console.error('Ошибка при добавлении данных в таблицу users:', err.message);
+                    } else {
+                        console.log('Пользователь успешно добавлен');
+                    }
+                });
             console.log('Тестовые пользователи добавлены');
         }
     });
@@ -122,6 +160,16 @@ db.serialize(() => {
 });
 
 db.serialize(() => {
+    db.get("SELECT COUNT(*) AS count FROM car_desc_photos", (err, rows) => {
+        if (rows.count == 0) {
+            db.run(`INSERT INTO car_desc_photos (users_id, photo_path) VALUES (1, '../Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
+            db.run(`INSERT INTO car_desc_photos (users_id, photo_path) VALUES (2, '../Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
+            console.log('Тестовые фото для машин добавлены');
+        }
+    });
+});
+
+db.serialize(() => {
     db.get("SELECT COUNT(*) AS count FROM users_status_photos", (err, rows) => {
         if (rows.count == 0) {
             db.run(`INSERT INTO users_status_photos (user_id, photo_path) VALUES (1, '../Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
@@ -130,7 +178,6 @@ db.serialize(() => {
         }
     });
 });
-
 
 const key = 'XuXuXaXa_MARK_II_B_TToucKax_CTOJl6a';
 

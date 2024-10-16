@@ -116,6 +116,20 @@ app.get('/users-status', authToken, (req, res) => {
     });
 });
 
+app.get('/users-car-desc', authToken, (req, res) => {
+    const userId = req.user.id;
+
+    const sql = "SELECT users_car_desc FROM users WHERE id = ?";
+    db.get(sql, [userId], (err, row) => {
+        if (err || !row || !row.users_car_desc) {
+            console.error(err);
+            return res.status(404).send("car desc found.");
+        }
+
+        res.status(200).send(row.users_car_desc);
+    })
+})
+
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
