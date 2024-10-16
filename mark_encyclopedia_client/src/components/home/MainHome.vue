@@ -5,6 +5,8 @@
         Здравствуй, {{ this.name }}
       </h1>
       <label>Обо мне:<br> {{ this.status }}</label>
+      <br>
+      <label>О моем марчке:<br>{{ this.carDesc }}</label>
     </div>
   </v-container>
 </template>
@@ -19,11 +21,13 @@
     mounted() {
       this.getUsersStatus();
       this.getUserName();
+      this.getCarDesc();
     },
     data() {
       return {
         name: null,
         status: null,
+        carDesc: null,
         token: sessionStorage.getItem("token") == null ? null : sessionStorage.getItem("token")
       }
     },
@@ -47,6 +51,22 @@
       async getUserName() {
         const decodedToken = jwtDecode(this.token);
         this.name = decodedToken.name;
+      },
+      async getCarDesc() {
+        if (this.token != null) {
+          try {
+            const response = await axios.get(`http://localhost:3001/users-car-desc`, {
+              headers: {
+                'Authorization': `Bearer ${this.token}`
+              },
+              responseType: 'text'
+            });
+            this.carDesc = response.data;
+          }
+          catch (error) {
+            alert(`Не удалось загрузить описание машины - ${error}`);
+          }
+        }
       }
     }
   }

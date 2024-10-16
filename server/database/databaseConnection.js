@@ -111,7 +111,7 @@ db.serialize(() => {
 db.serialize(() => {
     db.get("SELECT COUNT(*) AS count FROM users", (err, row) => {
         if (row.count === 0) {
-            const userDesc = 'Мой \'последний самурай\': \n1jz-gte (турбина, 280 л.с.), диски - \“Крутые диски\”';
+            const userDesc = 'Мой \'последний самурай\': \n 1jz-gte (турбина, 280 л.с.), диски - \“Крутые диски\”';
             db.run(`INSERT INTO users (email, password, name, profile_photo_path, users_status_text, users_car_desc) VALUES (?, ?, ?, ?, ?, ?)`,
                 ['admin@yandex.ru', 'admin34', 'ApaXuc', '../Mark_II_Encyclopedia/server/profilePhotos/templateProfilePhoto.jpg', 'Несколько раз намотался на столб =)', userDesc],
                 (err) => {
