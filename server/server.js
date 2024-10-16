@@ -116,7 +116,11 @@ app.get('/users-status', authToken, (req, res) => {
     });
 });
 
+app.get('/users-car-desc', authToken, (req, res) => {
+    const userId = req.user.id;
 
+    const sql = "SELECT "
+})
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

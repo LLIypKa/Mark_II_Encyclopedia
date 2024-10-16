@@ -95,7 +95,7 @@ db.serialize(() => {
 
 db.serialize(() => {
     db.run(
-        `CREATE TABLE IF NOT EXISTS car_desc_photos_pathes (
+        `CREATE TABLE IF NOT EXISTS car_desc_photos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             users_id INTEGER NOT NULL,
             photo_path TEXT NOT NULL,
@@ -160,11 +160,11 @@ db.serialize(() => {
 });
 
 db.serialize(() => {
-    db.get("SELECT COUNT(*) AS count FROM users_status_photos", (err, rows) => {
+    db.get("SELECT COUNT(*) AS count FROM car_desc_photos", (err, rows) => {
         if (rows.count == 0) {
-            db.run(`INSERT INTO car_desc_photos_pathes (user_id, photo_path) VALUES (1, '../Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
-            db.run(`INSERT INTO car_desc_photos_pathes (user_id, photo_path) VALUES (2, '../Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
-            console.log('Тестовые фото для статусов добавлены');
+            db.run(`INSERT INTO car_desc_photos (users_id, photo_path) VALUES (1, '../Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
+            db.run(`INSERT INTO car_desc_photos (users_id, photo_path) VALUES (2, '../Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
+            console.log('Тестовые фото для машин добавлены');
         }
     });
 });
