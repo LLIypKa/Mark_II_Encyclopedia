@@ -127,8 +127,43 @@ app.get('/users-car-desc', authToken, (req, res) => {
         }
 
         res.status(200).send(row.users_car_desc);
-    })
-})
+    });
+});
+app.use('/usersStatusPhotos', express.static(path.join(__dirname, 'usersStatusPhotos')));
+app.get('/get-status-photos', authToken, (req, res) => {
+    const userId = req.user.id;
+
+    const sql = "SELECT photo_path FROM users_status_photos WHERE user_id = ?";
+    db.all(sql, [userId], (err, rows) => {
+        if (err || !rows.length) {
+            console.error(err);
+            return res.status(404).send("Status photos not found.");
+        }
+
+        let photos = [];
+        for (let row in rows) {
+            photos.push(row.photo_path);
+            console.log()
+        }
+        //const photos = rows.map(row => `/usersStatusPhotos/${path.basename(row.photo_path)}`);
+        res.status(200).send({ photos });
+    });
+});
+
+app.get('/get-car-desc-photos', authToken, (req, res) => {
+    const userId = req.user.id;
+
+    const sql = "SELECT photo_path FROM car_desc_photos WHERE users_id = ?";
+    db.all(sql, [userId], (err, rows) => {
+        if (err || !rows.length) {
+            console.error(err);
+            return res.status(404).send("Car description photos not found.");
+        }
+
+        const photos = rows.map(row => path.resolve(row.photo_path));
+        res.status(200).send({ photos });
+    });
+});
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

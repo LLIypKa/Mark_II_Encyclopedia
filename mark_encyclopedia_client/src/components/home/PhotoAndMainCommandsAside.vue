@@ -14,7 +14,7 @@
         <a class="a">Двигатель 1jz-gte. Часть 1. Строение</a>
       </div>
       <div class = "commandsDiv">
-        <v-btn type = "button" class="logoutButtonBtn">Выйти</v-btn>
+        <v-btn type = "button" class="logoutButtonBtn" @click = "logout">Выйти</v-btn>
         <v-btn type = "button" class="changePersonalDataBtn">Изменить данные</v-btn>
         <v-btn type = "button" class="createNewStateBtn">Создать статью</v-btn>
       </div>
@@ -60,6 +60,9 @@
       async getUserId() {
         const decodedToken = jwtDecode(this.token);
         this.id = decodedToken.id;
+      },
+      async logout() {
+        this.$router.push('/login');
       }
     }
   }
@@ -97,7 +100,7 @@
     color: #ffffff;
     width: 90%;
     max-width: 100%;
-    min-height: 4vh;
+    min-height: 3vh;
     font-size: 3vh;
   }
 
@@ -123,7 +126,7 @@
   .label {
     align-items: center;
     color: #ffffff;
-    font-size: 3vh;
+    font-size: 3.25vh;
   }
 
   .labelInInputDiv {
@@ -144,7 +147,7 @@
   }
 
   .v-text-field >>> input {
-    width: calc(100%-20px);
+    width: 18vh;
     font-size: 3vh;
   }
 

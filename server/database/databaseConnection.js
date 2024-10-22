@@ -6,15 +6,15 @@ const multer = require('multer');
 const fs = require('fs');
 
 const dbPath = path.resolve(__dirname, "base.db")
-const profilePhotosFolder = '/profilePhotos/';
+const profilePhotosFolder = 'C:/Users/LLIypuK/Desktop/Mark_II_Encyclopedia/Mark_II_Encyclopedia/server/profilePhotos';
 if (!fs.existsSync(profilePhotosFolder)) {
     fs.mkdirSync(profilePhotosFolder);
 }
-const usersStatusPhotos = '/usersStatusPhotos/';
+const usersStatusPhotos = './usersStatusPhotos/';
 if (!fs.existsSync(usersStatusPhotos)) {
     fs.mkdirSync(usersStatusPhotos);
 }
-const usersCarsPhotos = '/usersCarsPhotos/';
+const usersCarsPhotos = './usersCarsPhotos/';
 if (!fs.existsSync(usersCarsPhotos)) {
     fs.mkdirSync(usersCarsPhotos);
 }
@@ -113,7 +113,7 @@ db.serialize(() => {
         if (row.count === 0) {
             const userDesc = 'Мой \'последний самурай\': \n 1jz-gte (турбина, 280 л.с.), диски - \“Крутые диски\”';
             db.run(`INSERT INTO users (email, password, name, profile_photo_path, users_status_text, users_car_desc) VALUES (?, ?, ?, ?, ?, ?)`,
-                ['admin@yandex.ru', 'admin34', 'ApaXuc', '../Mark_II_Encyclopedia/server/profilePhotos/templateProfilePhoto.jpg', 'Несколько раз намотался на столб =)', userDesc],
+                ['admin@yandex.ru', 'admin34', 'ApaXuc', '../Mark_II_Encyclopedia/Mark_II_Encyclopedia/server/profilePhotos/templateProfilePhoto.jpg', 'Несколько раз намотался на столб =)', userDesc],
                 (err) => {
                     if (err) {
                         console.error('Ошибка при добавлении данных в таблицу users:', err.message);
@@ -123,7 +123,7 @@ db.serialize(() => {
             });
             db.run(`INSERT INTO users (email, password, name, profile_photo_path, users_status_text, users_car_desc) 
             VALUES (?, ?, ?, ?, ?, ?)`,
-                ['callika@yandex.ru', 'admin35', 'LLIypKa', '../Mark_II_Encyclopedia/server/profilePhotos/templateProfilePhoto.jpg',
+                ['callika@yandex.ru', 'admin35', 'LLIypKa', '../Mark_II_Encyclopedia/Mark_II_Encyclopedia/server/profilePhotos/templateProfilePhoto.jpg',
                     'Ни столба тебе, ни жезла, самурай', userDesc],
                 (err) => {
                     if (err) {
@@ -162,8 +162,8 @@ db.serialize(() => {
 db.serialize(() => {
     db.get("SELECT COUNT(*) AS count FROM car_desc_photos", (err, rows) => {
         if (rows.count == 0) {
-            db.run(`INSERT INTO car_desc_photos (users_id, photo_path) VALUES (1, '../Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
-            db.run(`INSERT INTO car_desc_photos (users_id, photo_path) VALUES (2, '../Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
+            db.run(`INSERT INTO car_desc_photos (users_id, photo_path) VALUES (1, '../Mark_II_Encyclopedia/Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
+            db.run(`INSERT INTO car_desc_photos (users_id, photo_path) VALUES (2, '../Mark_II_Encyclopedia/Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
             console.log('Тестовые фото для машин добавлены');
         }
     });
@@ -172,8 +172,8 @@ db.serialize(() => {
 db.serialize(() => {
     db.get("SELECT COUNT(*) AS count FROM users_status_photos", (err, rows) => {
         if (rows.count == 0) {
-            db.run(`INSERT INTO users_status_photos (user_id, photo_path) VALUES (1, '../Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
-            db.run(`INSERT INTO users_status_photos (user_id, photo_path) VALUES (2, '../Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
+            db.run(`INSERT INTO users_status_photos (user_id, photo_path) VALUES (1, '../Mark_II_Encyclopedia/Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
+            db.run(`INSERT INTO users_status_photos (user_id, photo_path) VALUES (2, '../Mark_II_Encyclopedia/Mark_II_Encyclopedia/server/usersStatusPhotos/templateStatusPhoto.jpg')`);
             console.log('Тестовые фото для статусов добавлены');
         }
     });
