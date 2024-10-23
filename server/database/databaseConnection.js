@@ -113,7 +113,7 @@ db.serialize(() => {
         if (row.count === 0) {
             const userDesc = 'Мой \'последний самурай\': \n 1jz-gte (турбина, 280 л.с.), диски - \“Крутые диски\”';
             db.run(`INSERT INTO users (email, password, name, profile_photo_path, users_status_text, users_car_desc) VALUES (?, ?, ?, ?, ?, ?)`,
-                ['admin@yandex.ru', 'admin34', 'ApaXuc', '../Mark_II_Encyclopedia/Mark_II_Encyclopedia/server/profilePhotos/templateProfilePhoto.jpg', 'Несколько раз намотался на столб =)', userDesc],
+                ['admin@yandex.ru', 'admin34', 'ApaXuc', 'profilePhotos/templateProfilePhoto.jpg', 'Несколько раз намотался на столб =)', userDesc],
                 (err) => {
                     if (err) {
                         console.error('Ошибка при добавлении данных в таблицу users:', err.message);
@@ -123,7 +123,7 @@ db.serialize(() => {
             });
             db.run(`INSERT INTO users (email, password, name, profile_photo_path, users_status_text, users_car_desc) 
             VALUES (?, ?, ?, ?, ?, ?)`,
-                ['callika@yandex.ru', 'admin35', 'LLIypKa', '../Mark_II_Encyclopedia/Mark_II_Encyclopedia/server/profilePhotos/templateProfilePhoto.jpg',
+                ['callika@yandex.ru', 'admin35', 'LLIypKa', 'profilePhotos/templateProfilePhoto.jpg',
                     'Ни столба тебе, ни жезла, самурай', userDesc],
                 (err) => {
                     if (err) {

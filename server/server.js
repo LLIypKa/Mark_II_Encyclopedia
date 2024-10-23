@@ -12,6 +12,7 @@ const PORT = 3001;
 
 const {db, createToken, key} = require('./database/databaseConnection.js');
 const { error } = require('console');
+app.use('/usersCarsPhotos', express.static('usersCarsPhotos'))
 
 const profilePhotoStorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -99,6 +100,7 @@ app.get('/profile-photo', authToken, (req, res) => {
 
         const filePath = row.profile_photo_path;
         res.sendFile(path.resolve(filePath));
+        // C:\Users\LLIypuK\Desktop\Mark_II_Encyclopedia\Mark_II_Encyclopedia\server\profilePhotos\templateProfilePhoto.jpg
     });
 });
 
@@ -160,7 +162,7 @@ app.get('/get-car-desc-photos', authToken, (req, res) => {
             return res.status(404).send("Car description photos not found.");
         }
 
-        const photos = rows.map(row => path.resolve(row.photo_path));
+        const photos = rows.map(row => row.photo_path);
         res.status(200).send({ photos });
     });
 });

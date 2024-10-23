@@ -15,7 +15,7 @@
             :key="index"
             class="photoInPhotosDiv"
           >
-            <img :src="photo" alt="Status Photo"/>
+            <img :src="'http://localhost:3001/' + photo" alt="Status Photo"/>
           </v-col>
         </v-row>
       </div>
@@ -93,11 +93,13 @@
       async getPhotos() {
         if (this.token != null) {
           try {
-            const response = await axios.get(`http://localhost:3001/get-status-photos`, {
+            const response = await axios.get(`http://localhost:3001/get-car-desc-photos`, {
               headers: {
                 'Authorization': `Bearer ${this.token}`
               }
             });
+
+            console.log(response.data)
             /*for (let photo in response.data.photos) {
               this.statusPhotos.push(URL.createObjectURL(photo));
             }*/
