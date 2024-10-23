@@ -8,16 +8,9 @@
      
       <br>
       <label>О моем марчке:<br>{{ this.carDesc }}</label>
-       <div id="statusPhotos" style="display:flex; justify-content: space-around;">
-        <v-row>
-          <v-col
-            v-for="(photo, index) in statusPhotos"
-            :key="index"
-            class="photoInPhotosDiv"
-          >
-            <img :src="'http://localhost:3001/' + photo" alt="Status Photo"/>
-          </v-col>
-        </v-row>
+      <div id="statusPhotos" class="carsPhotoDiv">
+        <img v-for="(photo, index) in statusPhotos"
+          :key="index" :src="'http://localhost:3001/' + photo" alt="car photo" class="photoInPhotosDiv">
       </div>
     </div>
     <div class = "generalDiv1">
@@ -142,15 +135,24 @@
     text-align: left; 
   }
 
+  .carsPhotoDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
   .h1 {
     align-self: center;
     margin-left: 1%;
   }
 
   .photoInPhotosDiv {
-    width: auto;
+    max-width: 50vh;
     height: auto;
-    justify-content: space-around;
+    margin-bottom: 2%;
+    margin-top: 2%;
+    box-shadow: 5px 5px 5px 2px rgb(158, 0, 155), 0 0 2em blueviolet;
+
   }
 
   .a {
