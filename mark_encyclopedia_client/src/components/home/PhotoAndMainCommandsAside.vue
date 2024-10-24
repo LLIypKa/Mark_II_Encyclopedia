@@ -170,5 +170,6 @@
     width: 100%;
     border-radius: 5px;
     margin-bottom: 1%;
+    padding-left: 1%;
   }
 </style>

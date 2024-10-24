@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <div class="generalDiv">
-      <h1 align = "center">
+      <h1 align = "center" class="h1">
         Здравствуй, {{ this.name }}
       </h1>
       <label>Обо мне:<br> {{ this.status }}</label>
@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class = "generalDiv1">
-      <h1 style="margin-left: 1%;">
+      <h1 align = "left" class="h1">
         Моя активность
       </h1>
       <a class="a">Оставлен комментарий “марк в поисках столба” на статью “статья 1”</a>
@@ -123,7 +123,7 @@
     min-width: 100%;
     background: rgba( 0,0,0,.6);
    
-    min-height: 44vh;
+    min-height: 31vh;
     border-radius: 5px;
     backdrop-filter: blur(2px);
     color: #fff;
@@ -144,15 +144,15 @@
   .h1 {
     align-self: center;
     margin-left: 1%;
+    font-size: 4vh;
   }
 
   .photoInPhotosDiv {
-    max-width: 50vh;
+    max-width: 45vh;
     height: auto;
     margin-bottom: 2%;
     margin-top: 2%;
     box-shadow: 5px 5px 5px 2px rgb(158, 0, 155), 0 0 2em blueviolet;
-
   }
 
   .a {
@@ -164,5 +164,6 @@
     margin-bottom: 1%;
     margin-right: 1%;
     margin-left: 1%;
+    padding-left: 1%;
   }
 </style>
