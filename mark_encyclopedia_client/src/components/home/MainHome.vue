@@ -123,7 +123,7 @@
     min-width: 100%;
     background: rgba( 0,0,0,.6);
    
-    min-height: 31vh;
+    min-height: 27.8vh;
     border-radius: 5px;
     backdrop-filter: blur(2px);
     color: #fff;
@@ -144,7 +144,7 @@
   .h1 {
     align-self: center;
     margin-left: 1%;
-    font-size: 4vh;
+    font-size: 6vh;
   }
 
   .photoInPhotosDiv {

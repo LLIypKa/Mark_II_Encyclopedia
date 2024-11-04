@@ -5,7 +5,7 @@
         <label class="label">id:{{ this.id }}</label>
       </div>
       <div class="inputDiv">
-        <v-form ref="form">
+        <v-form ref="form" style="width: 100%; ">
           <v-text-field placeholder="Введите название статьи" v-model="stateName" hide-details="true" class="v-text-field"/>
         </v-form>
         <label class="labelInInputDiv">Последние статьи</label>
@@ -99,8 +99,9 @@
   .logoutButtonBtn, .createNewStateBtn, .changePersonalDataBtn {
     color: #ffffff;
     width: 90%;
-    max-width: 100%;
+    max-width: 90%;
     min-height: 3vh;
+    max-height: 5vh;
     font-size: 3vh;
   }
 
@@ -136,14 +137,12 @@
   }
 
   .v-text-field {
-    width: 232%;
-    max-height: 50%;
+    width: 100%;
     border-radius: 5px;
     background: linear-gradient(to right, #2042ff, 50%, #b200ff);
     border: none;
     color: #ffffff;
     box-sizing: border-box;
-    margin: 1% 1% 1% 1%;
   }
 
   .v-text-field >>> input {
