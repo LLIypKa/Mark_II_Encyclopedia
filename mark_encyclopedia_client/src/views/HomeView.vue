@@ -1,12 +1,16 @@
 <template>
-  <HelloWorld />
+  <div class="mainDiv">
+    <PhotoAndMainCommandsAsideComponent style="width: 30%;"/>
+    <MainHomeComponent/>
+  </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
 
 // Components
-import HelloWorld from '../components/Home.vue';
+import MainHomeComponent from '../components/home/MainHome.vue';
+import PhotoAndMainCommandsAsideComponent from '../components/home/PhotoAndMainCommandsAside.vue'
 
 export default defineComponent({
   name: 'HomeView',
@@ -17,7 +21,17 @@ export default defineComponent({
     }
   },
   components: {
-    HelloWorld,
+    MainHomeComponent,
+    PhotoAndMainCommandsAsideComponent
   },
 });
 </script>
+
+<style lang="css" scoped>
+  .mainDiv {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    font-family: 'Gabriola';
+  }
+</style>
