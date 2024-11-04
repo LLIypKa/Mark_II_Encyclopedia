@@ -45,12 +45,12 @@ const authToken = (req, res, next) => {
 };
 
 app.post('/register', (req, res) => {
-    const { email, password, name } = req.body;
-    const sql = "INSERT INTO users (email, password, name) VALUES (?, ?, ?)";
+    const { email, password, name, status, car_desc } = req.body;
+    const sql = "INSERT INTO users (email, password, name, users_status_text, users_car_desc) VALUES (?, ?, ?, ?, ?)";
 
-    db.run(sql, [email, password, name], function (err) {
+    db.run(sql, [email, password, name, status, car_desc], function (err) {
         if (err) {
-            console.log(email + ' ' + password + ' ' + name)
+            console.log(email + ' ' + password + ' ' + name + ' ' + status + ' ' + car_desc);
             return res.status(400).send("User already exists or invalid input.");
         }
         res.status(201).send({ id: this.lastID, email });

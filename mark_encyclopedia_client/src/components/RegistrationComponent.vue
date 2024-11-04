@@ -10,6 +10,8 @@
                         type="email" required class="v-text-field"/>
                     <v-text-field variant="underlined" label = "Пароль" v-model="password" :rules="passwordRules"
                         type="password" required class="v-text-field"/>
+                    <v-text-field variant="underlined" label = "Статус (обо мне)" v-model="status" required class="v-text-field"/> 
+                    <v-text-field variant="underlined" label = "Описание авто " v-model="car_desc" required class="v-text-field"/>                
                     <v-btn type = "submit" text = "Зарегистрироваться" color="primary" :disabled="!valid"/>
                 </v-form>
             </v-card-text>
@@ -30,6 +32,8 @@
                 name: "",
                 email: "",
                 password: "",
+                status: "",
+                car_desc: "",
                 valid: false,
                 emailRules: [
                     v => !!v || "Почта обязательна",
@@ -52,7 +56,9 @@
                         const response = await axios.post('http://localhost:3001/register', {
                             email: this.email,
                             password: this.password,
-                            name: this.name
+                            name: this.name,
+                            status: this.status,
+                            car_desc: this.car_desc
                         });
                         alert(response.status)
                         if (response.status == 201) {
