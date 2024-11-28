@@ -17,7 +17,7 @@ app.use('/profilePhotos', express.static('profilePhotos'))
 
 const profilePhotoStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, '/profilePhotos');
+        cb(null, path.join(__dirname, 'profilePhotos'));
     },
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname);
@@ -45,11 +45,19 @@ const authToken = (req, res, next) => {
     });
 };
 
-app.post('/register', (req, res) => {
+app.post('/register', uploadProfilePhoto.single('profilePhoto'), (req, res) => {
     const { email, password, name, status, car_desc } = req.body;
-    const sql = "INSERT INTO users (email, password, name, users_status_text, users_car_desc) VALUES (?, ?, ?, ?, ?)";
+    
+    let profile_photo_path = null;
+    if (req.file) {
+        profile_photo_path = path.posix.join('profilePhotos', req.file.filename); // Путь к загруженному фото
+        profile_photo_path = profile_photo_path.substring(0, profile_photo_path.length);
+    }
+    const sql = "INSERT INTO users (email, password, name, users_status_text, users_car_desc, profile_photo_path) VALUES (?, ?, ?, ?, ?, ?)";
 
-    db.run(sql, [email, password, name, status, car_desc], function (err) {
+
+
+    db.run(sql, [email, password, name, status, car_desc, profile_photo_path], function (err) {
         if (err) {
             console.log(email + ' ' + password + ' ' + name + ' ' + status + ' ' + car_desc);
             return res.status(400).send("User already exists or invalid input.");

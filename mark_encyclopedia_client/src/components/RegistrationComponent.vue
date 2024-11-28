@@ -12,7 +12,7 @@
                         type="password" required class="v-text-field"/>
                     <v-text-field variant="underlined" label = "Статус (обо мне)" v-model="status" required class="v-text-field"/> 
                     <v-text-field variant="underlined" label = "Описание авто " v-model="car_desc" required class="v-text-field"/>                
-                    <input class = "input" type = "file" label = "Фото профиля"/>
+                    <input name = "photoInput" class = "input" @change = "handleFileSelect" type = "file" label = "Фото профиля"/>
                     <v-btn type = "submit" text = "Зарегистрироваться" color="primary" :disabled="!valid"/>
                 </v-form>
             </v-card-text>
@@ -58,16 +58,21 @@
             async register() {
                 if (this.$refs.form.validate()) {
                     try {
-                        const response = await axios.post('http://localhost:3001/register', {
-                            email: this.email,
-                            password: this.password,
-                            name: this.name,
-                            status: this.status,
-                            car_desc: this.car_desc
+                        const formData = new FormData();
+                        formData.append('email', this.email);
+                        formData.append('password', this.password);
+                        formData.append('name', this.name);
+                        formData.append('status', this.status);
+                        formData.append('car_desc', this.car_desc);
+                        formData.append('profilePhoto', this.profile_photo);
+                        const response = await axios.post('http://localhost:3001/register', formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
                         });
                         alert(response.status)
                         if (response.status == 201) {
-                            alert("jkshdfkjhasdkjlfhkjsadhf")
+                            alert("Регистрация прошла успешно")
                             router.push('/login');
                         }
                         
