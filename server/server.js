@@ -13,10 +13,11 @@ const PORT = 3001;
 const {db, createToken, key} = require('./database/databaseConnection.js');
 const { error } = require('console');
 app.use('/usersCarsPhotos', express.static('usersCarsPhotos'))
+app.use('/profilePhotos', express.static('profilePhotos'))
 
 const profilePhotoStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, './profilePhotos');
+        cb(null, '/profilePhotos');
     },
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname);
@@ -75,8 +76,13 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.post('/upload-profile-photo', authToken, uploadProfilePhoto.single('photo'), (req, res) => {
+app.post('/upload-profile-photo', authToken, uploadProfilePhoto.single('profilePhoto'), (req, res) => {
     const userId = req.user.id;
+
+    if (!req.file) {
+        return res.status(400).json({ message: 'Фото профиля не загружено' });
+    }
+
     const filePath = req.file.path;
 
     const sql = "UPDATE users SET profile_photo_path = ? WHERE id = ?";

@@ -12,6 +12,7 @@
                         type="password" required class="v-text-field"/>
                     <v-text-field variant="underlined" label = "Статус (обо мне)" v-model="status" required class="v-text-field"/> 
                     <v-text-field variant="underlined" label = "Описание авто " v-model="car_desc" required class="v-text-field"/>                
+                    <input class = "input" type = "file" label = "Фото профиля"/>
                     <v-btn type = "submit" text = "Зарегистрироваться" color="primary" :disabled="!valid"/>
                 </v-form>
             </v-card-text>
@@ -34,6 +35,7 @@
                 password: "",
                 status: "",
                 car_desc: "",
+                profile_photo: "",
                 valid: false,
                 emailRules: [
                     v => !!v || "Почта обязательна",
@@ -50,6 +52,9 @@
             };
         },
         methods: {
+            handleFileSelect(event) {
+                this.profile_photo = event.target.files[0];
+            },
             async register() {
                 if (this.$refs.form.validate()) {
                     try {
@@ -71,6 +76,15 @@
                         alert(error.response ? error.response.data : 'Error occurred');
                     }
                 }
+            },
+            async uploadPhoto() {
+                if (!this.profile_photo) {
+                    alert('Пожалуйста, выберите фото для загрузки');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('profilePhoto', this.profile_photo);
             }
         }
     }
@@ -131,5 +145,9 @@
     .v-label {
         font-size: 24px; 
         color: #fff;
+    }
+
+    .input {
+        color: blue;
     }
 </style>
