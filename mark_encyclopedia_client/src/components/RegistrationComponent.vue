@@ -11,7 +11,8 @@
                     <v-text-field variant="underlined" label = "Пароль" v-model="password" :rules="passwordRules"
                         type="password" required class="v-text-field"/>
                     <v-text-field variant="underlined" label = "Статус (обо мне)" v-model="status" required class="v-text-field"/> 
-                    <v-text-field variant="underlined" label = "Описание авто " v-model="car_desc" required class="v-text-field"/>                
+                    <v-text-field variant="underlined" label = "Описание авто " v-model="car_desc" required class="v-text-field"/>
+                    <label class="label">Выберите фото профиля</label>               
                     <input name = "photoInput" class = "input" @change = "handleFileSelect" type = "file" label = "Фото профиля"/>
                     <v-btn type = "submit" text = "Зарегистрироваться" color="primary" :disabled="!valid"/>
                 </v-form>
@@ -154,5 +155,9 @@
 
     .input {
         color: blue;
+    }
+
+    .label {
+        color: white;
     }
 </style>
