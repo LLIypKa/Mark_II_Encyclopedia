@@ -12,8 +12,9 @@ const PORT = 3001;
 
 const {db, createToken, key} = require('./database/databaseConnection.js');
 const { error } = require('console');
-app.use('/usersCarsPhotos', express.static('usersCarsPhotos'))
-app.use('/profilePhotos', express.static('profilePhotos'))
+app.use('/usersCarsPhotos', express.static('usersCarsPhotos'));
+app.use('/profilePhotos', express.static('profilePhotos'));
+app.use('/usersCarsPhotos', express.static('usersCarsPhotos'));
 
 const profilePhotoStorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -27,6 +28,19 @@ const profilePhotoStorage = multer.diskStorage({
 });
 
 const uploadProfilePhoto = multer({storage: profilePhotoStorage})
+
+const usersCarsPhotos = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, 'usersCarsPhotos'));
+    },
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        const filename = `${Date.now()}${ext}`;
+        cb(null, filename);
+    }
+})
+
+const uploadUsersCarsPhotos = multer({storage: usersCarsPhotos});
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -45,7 +59,7 @@ const authToken = (req, res, next) => {
     });
 };
 
-app.post('/register', uploadProfilePhoto.single('profilePhoto'), (req, res) => {
+app.post('/register', uploadProfilePhoto.single('profilePhoto'), uploadUsersCarsPhotos.array('usersCarsPhotos'), (req, res) => {
     const { email, password, name, status, car_desc } = req.body;
     
     let profile_photo_path = null;
@@ -55,14 +69,29 @@ app.post('/register', uploadProfilePhoto.single('profilePhoto'), (req, res) => {
     }
     const sql = "INSERT INTO users (email, password, name, users_status_text, users_car_desc, profile_photo_path) VALUES (?, ?, ?, ?, ?, ?)";
 
-
-
     db.run(sql, [email, password, name, status, car_desc, profile_photo_path], function (err) {
         if (err) {
             console.log(email + ' ' + password + ' ' + name + ' ' + status + ' ' + car_desc);
             return res.status(400).send("User already exists or invalid input.");
         }
-        res.status(201).send({ id: this.lastID, email });
+        if (req.files && req.files.length > 0) {
+            const carPhotosSql = `
+                        INSERT INTO car_desc_photos (users_id, photo_path) VALUES (?, ?)
+                    `;
+
+            const carPhotoInsertions = req.files.map((file) =>
+                db.run(carPhotosSql, [userId, path.posix.join('usersCarsPhotos', file.filename)])
+            );
+
+            Promise.all(carPhotoInsertions)
+                .then(() => res.status(201).send({ id: userId, email }))
+                .catch((error) => {
+                    console.error(error.message);
+                    res.status(500).send("Ошибка при сохранении фотографий машин.");
+                });
+        } else {
+            res.status(201).send({ id: userId, email });
+        }
     });
 });
 

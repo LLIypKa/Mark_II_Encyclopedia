@@ -13,7 +13,8 @@
                     <v-text-field variant="underlined" label = "Статус (обо мне)" v-model="status" required class="v-text-field"/> 
                     <v-text-field variant="underlined" label = "Описание авто " v-model="car_desc" required class="v-text-field"/>
                     <label class="label">Выберите фото профиля</label>               
-                    <input name = "photoInput" class = "input" @change = "handleFileSelect" type = "file" label = "Фото профиля"/>
+                    <input name = "photoInput" class = "input" @change = "handleOneFileSelect" type = "file" label = "Фото профиля"/>
+                    <input name = "carsPhotoInput" class = "input" @change = "handleFilesSelect" type = "file" label = "Фото машины" multiple="multiple"/>
                     <v-btn type = "submit" text = "Зарегистрироваться" color="primary" :disabled="!valid"/>
                 </v-form>
             </v-card-text>
@@ -37,6 +38,7 @@
                 status: "",
                 car_desc: "",
                 profile_photo: "",
+                cars_photo: "",
                 valid: false,
                 emailRules: [
                     v => !!v || "Почта обязательна",
@@ -53,8 +55,11 @@
             };
         },
         methods: {
-            handleFileSelect(event) {
+            handleOneFileSelect(event) {
                 this.profile_photo = event.target.files[0];
+            },
+            handleFilesSelect(event) {
+                this.cars_photo = event.target.files;
             },
             async register() {
                 if (this.$refs.form.validate()) {
@@ -66,6 +71,9 @@
                         formData.append('status', this.status);
                         formData.append('car_desc', this.car_desc);
                         formData.append('profilePhoto', this.profile_photo);
+                        for (let i = 0; i < this.cars_photo.length; i++) {
+                            formData.append('usersCarsPhotos', this.cars_photo[i]);
+                        }
                         const response = await axios.post('http://localhost:3001/register', formData, {
                             headers: {
                                 'Content-Type': 'multipart/form-data',
