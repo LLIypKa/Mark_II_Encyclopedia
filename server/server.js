@@ -16,7 +16,7 @@ app.use('/usersCarsPhotos', express.static('usersCarsPhotos'));
 app.use('/profilePhotos', express.static('profilePhotos'));
 app.use('/usersCarsPhotos', express.static('usersCarsPhotos'));
 
-const profilePhotoStorage = multer.diskStorage({
+/*const profilePhotoStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.join(__dirname, 'profilePhotos'));
     },
@@ -25,11 +25,11 @@ const profilePhotoStorage = multer.diskStorage({
         const filename = `${Date.now()}${ext}`;
         cb(null, filename);
     }
-});
+});*/
 
-const uploadProfilePhoto = multer({storage: profilePhotoStorage})
+//const uploadProfilePhoto = multer({storage: profilePhotoStorage})
 
-const usersCarsPhotos = multer.diskStorage({
+/*const usersCarsPhotos = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.join(__dirname, 'usersCarsPhotos'));
     },
@@ -38,9 +38,24 @@ const usersCarsPhotos = multer.diskStorage({
         const filename = `${Date.now()}${ext}`;
         cb(null, filename);
     }
-})
+})*/
 
-const uploadUsersCarsPhotos = multer({storage: usersCarsPhotos});
+//const uploadUsersCarsPhotos = multer({storage: usersCarsPhotos});
+
+const upload = multer({
+    storage: multer.diskStorage({
+        destination: (req, file, cb) => {
+            const isProfilePhoto = file.fieldname === 'profilePhoto';
+            const uploadPath = isProfilePhoto ? 'profilePhotos' : 'usersCarsPhotos';
+            cb(null, path.join(__dirname, uploadPath));
+        },
+        filename: (req, file, cb) => {
+            const ext = path.extname(file.originalname);
+            const filename = `${Date.now()}${ext}`;
+            cb(null, filename);
+        },
+    }),
+});
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -59,12 +74,16 @@ const authToken = (req, res, next) => {
     });
 };
 
-app.post('/register', uploadProfilePhoto.single('profilePhoto'), uploadUsersCarsPhotos.array('usersCarsPhotos'), (req, res) => {
+app.post('/register', upload.fields([
+    { name: 'profilePhoto', maxCount: 1 },
+    { name: 'usersCarsPhotos', maxCount: 10 }, // Укажите максимум файлов
+]), (req, res) => {
     const { email, password, name, status, car_desc } = req.body;
-    
+    console.log(req);
+    console.log("\n\n" + res);
     let profile_photo_path = null;
-    if (req.file) {
-        profile_photo_path = path.posix.join('profilePhotos', req.file.filename); // Путь к загруженному фото
+    if (req.files['profilePhoto'] && req.files['profilePhoto'].length > 0) {
+        profile_photo_path = path.posix.join('profilePhotos', req.files['profilePhoto'][0].filename); // Путь к загруженному фото
         profile_photo_path = profile_photo_path.substring(0, profile_photo_path.length);
     }
     const sql = "INSERT INTO users (email, password, name, users_status_text, users_car_desc, profile_photo_path) VALUES (?, ?, ?, ?, ?, ?)";
@@ -74,23 +93,30 @@ app.post('/register', uploadProfilePhoto.single('profilePhoto'), uploadUsersCars
             console.log(email + ' ' + password + ' ' + name + ' ' + status + ' ' + car_desc);
             return res.status(400).send("User already exists or invalid input.");
         }
-        if (req.files && req.files.length > 0) {
+        if (req.files['usersCarsPhotos'] && req.files['usersCarsPhotos'].length > 0) {
             const carPhotosSql = `
                         INSERT INTO car_desc_photos (users_id, photo_path) VALUES (?, ?)
                     `;
+            const carPhotos = req.files['usersCarsPhotos'];
 
-            const carPhotoInsertions = req.files.map((file) =>
-                db.run(carPhotosSql, [userId, path.posix.join('usersCarsPhotos', file.filename)])
-            );
+            const carPhotoInsertions = carPhotos.map((file) => {
+                const photoPath = path.posix.join('usersCarsPhotos', file.filename);
+                return new Promise((resolve, reject) => {
+                    db.run(carPhotosSql, [this.lastID, photoPath], (err) => {
+                        if (err) reject(err);
+                        else resolve();
+                    });
+                });
+            });
 
             Promise.all(carPhotoInsertions)
-                .then(() => res.status(201).send({ id: userId, email }))
+                .then(() => res.status(201).send({ id: this.lastID, email }))
                 .catch((error) => {
-                    console.error(error.message);
+                    console.error(`Ошибка при сохранении фотографий машин: ${error.message}`);
                     res.status(500).send("Ошибка при сохранении фотографий машин.");
                 });
         } else {
-            res.status(201).send({ id: userId, email });
+            res.status(201).send({ id: this.lastID, email });
         }
     });
 });
@@ -113,7 +139,7 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.post('/upload-profile-photo', authToken, uploadProfilePhoto.single('profilePhoto'), (req, res) => {
+/*app.post('/upload-profile-photo', authToken, uploadProfilePhoto.single('profilePhoto'), (req, res) => {
     const userId = req.user.id;
 
     if (!req.file) {
@@ -129,7 +155,7 @@ app.post('/upload-profile-photo', authToken, uploadProfilePhoto.single('profileP
         }
         res.status(200).send("Profile photo uploaded and saved.");
     });
-});
+});*/
 
 app.get('/profile-photo', authToken, (req, res) => {
     const userId = req.user.id;
