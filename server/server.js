@@ -15,33 +15,6 @@ const { error } = require('console');
 app.use('/usersCarsPhotos', express.static('usersCarsPhotos'));
 app.use('/profilePhotos', express.static('profilePhotos'));
 app.use('/usersCarsPhotos', express.static('usersCarsPhotos'));
-
-/*const profilePhotoStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, 'profilePhotos'));
-    },
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        const filename = `${Date.now()}${ext}`;
-        cb(null, filename);
-    }
-});*/
-
-//const uploadProfilePhoto = multer({storage: profilePhotoStorage})
-
-/*const usersCarsPhotos = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, 'usersCarsPhotos'));
-    },
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        const filename = `${Date.now()}${ext}`;
-        cb(null, filename);
-    }
-})*/
-
-//const uploadUsersCarsPhotos = multer({storage: usersCarsPhotos});
-
 const upload = multer({
     storage: multer.diskStorage({
         destination: (req, file, cb) => {
@@ -169,7 +142,6 @@ app.get('/profile-photo', authToken, (req, res) => {
 
         const filePath = row.profile_photo_path;
         res.sendFile(path.resolve(filePath));
-        // C:\Users\LLIypuK\Desktop\Mark_II_Encyclopedia\Mark_II_Encyclopedia\server\profilePhotos\templateProfilePhoto.jpg
     });
 });
 
@@ -216,7 +188,6 @@ app.get('/get-status-photos', authToken, (req, res) => {
             photos.push(row.photo_path);
             console.log()
         }
-        //const photos = rows.map(row => `/usersStatusPhotos/${path.basename(row.photo_path)}`);
         res.status(200).send({ photos });
     });
 });

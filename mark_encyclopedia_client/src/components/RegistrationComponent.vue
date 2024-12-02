@@ -162,7 +162,7 @@
     }
 
     .input {
-        color: blue;
+        color: violet;
     }
 
     .label {
