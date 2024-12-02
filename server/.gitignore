@@ -1,2 +1,4 @@
 node_modules
 database/base.db
+server/profilePhotos
+server/usersCarsPhotos

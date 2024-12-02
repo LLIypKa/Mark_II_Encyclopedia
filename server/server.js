@@ -12,20 +12,23 @@ const PORT = 3001;
 
 const {db, createToken, key} = require('./database/databaseConnection.js');
 const { error } = require('console');
-app.use('/usersCarsPhotos', express.static('usersCarsPhotos'))
-
-const profilePhotoStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './profilePhotos');
-    },
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        const filename = `${Date.now()}${ext}`;
-        cb(null, filename);
-    }
+app.use('/usersCarsPhotos', express.static('usersCarsPhotos'));
+app.use('/profilePhotos', express.static('profilePhotos'));
+app.use('/usersCarsPhotos', express.static('usersCarsPhotos'));
+const upload = multer({
+    storage: multer.diskStorage({
+        destination: (req, file, cb) => {
+            const isProfilePhoto = file.fieldname === 'profilePhoto';
+            const uploadPath = isProfilePhoto ? 'profilePhotos' : 'usersCarsPhotos';
+            cb(null, path.join(__dirname, uploadPath));
+        },
+        filename: (req, file, cb) => {
+            const ext = path.extname(file.originalname);
+            const filename = `${Date.now()}${ext}`;
+            cb(null, filename);
+        },
+    }),
 });
-
-const uploadProfilePhoto = multer({storage: profilePhotoStorage})
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -44,16 +47,50 @@ const authToken = (req, res, next) => {
     });
 };
 
-app.post('/register', (req, res) => {
-    const { email, password, name } = req.body;
-    const sql = "INSERT INTO users (email, password, name) VALUES (?, ?, ?)";
+app.post('/register', upload.fields([
+    { name: 'profilePhoto', maxCount: 1 },
+    { name: 'usersCarsPhotos', maxCount: 10 }, // Укажите максимум файлов
+]), (req, res) => {
+    const { email, password, name, status, car_desc } = req.body;
+    console.log(req);
+    console.log("\n\n" + res);
+    let profile_photo_path = null;
+    if (req.files['profilePhoto'] && req.files['profilePhoto'].length > 0) {
+        profile_photo_path = path.posix.join('profilePhotos', req.files['profilePhoto'][0].filename); // Путь к загруженному фото
+        profile_photo_path = profile_photo_path.substring(0, profile_photo_path.length);
+    }
+    const sql = "INSERT INTO users (email, password, name, users_status_text, users_car_desc, profile_photo_path) VALUES (?, ?, ?, ?, ?, ?)";
 
-    db.run(sql, [email, password, name], function (err) {
+    db.run(sql, [email, password, name, status, car_desc, profile_photo_path], function (err) {
         if (err) {
-            console.log(email + ' ' + password + ' ' + name)
+            console.log(email + ' ' + password + ' ' + name + ' ' + status + ' ' + car_desc);
             return res.status(400).send("User already exists or invalid input.");
         }
-        res.status(201).send({ id: this.lastID, email });
+        if (req.files['usersCarsPhotos'] && req.files['usersCarsPhotos'].length > 0) {
+            const carPhotosSql = `
+                        INSERT INTO car_desc_photos (users_id, photo_path) VALUES (?, ?)
+                    `;
+            const carPhotos = req.files['usersCarsPhotos'];
+
+            const carPhotoInsertions = carPhotos.map((file) => {
+                const photoPath = path.posix.join('usersCarsPhotos', file.filename);
+                return new Promise((resolve, reject) => {
+                    db.run(carPhotosSql, [this.lastID, photoPath], (err) => {
+                        if (err) reject(err);
+                        else resolve();
+                    });
+                });
+            });
+
+            Promise.all(carPhotoInsertions)
+                .then(() => res.status(201).send({ id: this.lastID, email }))
+                .catch((error) => {
+                    console.error(`Ошибка при сохранении фотографий машин: ${error.message}`);
+                    res.status(500).send("Ошибка при сохранении фотографий машин.");
+                });
+        } else {
+            res.status(201).send({ id: this.lastID, email });
+        }
     });
 });
 
@@ -75,8 +112,13 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.post('/upload-profile-photo', authToken, uploadProfilePhoto.single('photo'), (req, res) => {
+/*app.post('/upload-profile-photo', authToken, uploadProfilePhoto.single('profilePhoto'), (req, res) => {
     const userId = req.user.id;
+
+    if (!req.file) {
+        return res.status(400).json({ message: 'Фото профиля не загружено' });
+    }
+
     const filePath = req.file.path;
 
     const sql = "UPDATE users SET profile_photo_path = ? WHERE id = ?";
@@ -86,7 +128,7 @@ app.post('/upload-profile-photo', authToken, uploadProfilePhoto.single('photo'),
         }
         res.status(200).send("Profile photo uploaded and saved.");
     });
-});
+});*/
 
 app.get('/profile-photo', authToken, (req, res) => {
     const userId = req.user.id;
@@ -100,7 +142,6 @@ app.get('/profile-photo', authToken, (req, res) => {
 
         const filePath = row.profile_photo_path;
         res.sendFile(path.resolve(filePath));
-        // C:\Users\LLIypuK\Desktop\Mark_II_Encyclopedia\Mark_II_Encyclopedia\server\profilePhotos\templateProfilePhoto.jpg
     });
 });
 
@@ -147,7 +188,6 @@ app.get('/get-status-photos', authToken, (req, res) => {
             photos.push(row.photo_path);
             console.log()
         }
-        //const photos = rows.map(row => `/usersStatusPhotos/${path.basename(row.photo_path)}`);
         res.status(200).send({ photos });
     });
 });
