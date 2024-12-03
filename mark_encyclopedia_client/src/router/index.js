@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginComponent from '../components/LoginComponent.vue'
 import RegistrationComponent from '@/components/RegistrationComponent.vue'
+import ChangeUsersDataComponent from '@/components/ChangeUsersDataComponent.vue'
 
 const routes = [
   {
@@ -33,6 +34,14 @@ const routes = [
     component: RegistrationComponent,
     meta: {
       quest: true
+    }
+  },
+  {
+    path: '/changeData',
+    name: 'changeData',
+    component: ChangeUsersDataComponent,
+    meta: {
+      requireAuth: true
     }
   }
 ]
