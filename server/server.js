@@ -240,6 +240,24 @@ app.get('/articles/:id', authToken, (req, res) => {
     });
 });
 
+app.get('/user-name-by-id/:id', authToken, (req, res) => {
+    const id = req.params.id;
+    const sql = "SELECT name FROM users WHERE id = ?";
+
+    db.get(sql, [id], (err, row) => {
+        if (err) {
+            console.error(err.message);
+            res.status(500).send({error: "Ошибка при получении данных автора"});
+        } else if (!row) {
+            res.status(404).send({error: "Ошибка"});
+        }
+        else {
+            console.log(row);
+            res.status(200).json(row);
+        }
+    })
+})
+
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
