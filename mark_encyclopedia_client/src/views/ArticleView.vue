@@ -1,6 +1,6 @@
 <template>
     
-  <div v-if="loading">
+  <div v-if="loadingArticle">
     <p>Загрузка статьи...</p>
   </div>
   <div v-else-if="article && authorName">
@@ -10,6 +10,22 @@
     <p>Дата публикации: {{ article.created_at }}</p>
   </div>
   <p v-else>Статья не найдена или ошибка загрузки.</p>
+  <p v-if = "loadingComments">Загрузка комментариев</p>
+  <div v-else>
+    <h1>Комментарии</h1>
+    <v-form>
+        <v-text-field variant = "underlined" label = "Текст комментария" v-model="commentText"/>
+        <button type="submit">Оставить комментарий</button>
+    </v-form>
+    <ul>
+        <li v-for="comment in commentaries" :key="comment.id">
+            <div>
+                <p>{{ comment.authorName }}</p>
+                <p>{{ comment.content }}, {{ comment.date }}</p>
+            </div>
+        </li>
+    </ul>
+  </div>
 </template>
 
 <script>
@@ -22,9 +38,16 @@ import { defineComponent } from 'vue';
             return {
                 token: sessionStorage.getItem("token") == null ? null : sessionStorage.getItem("token"),
                 article: null,
-                loading: true,
+                loadingArticle: true,
+                loadingComments: true,
                 authorName: null,
-                commentaries: []
+                commentaries: [],
+                commentText: null,
+                commentTextRules: [
+                    v => !!v || "Текст обязателен",
+                    v => (v.length >= 6) || "Комментарий должен быть длинее 6 символов"
+                ]
+
             }
         },
         mounted() {
@@ -50,8 +73,9 @@ import { defineComponent } from 'vue';
                     alert(err);
                 }
                 finally {
-                    this.loading = false;
+                    this.loadingArticle = false;
                     this.getAuthorName();
+                    this.getComments();
                 }
             },
             async getAuthorName() {
@@ -68,7 +92,24 @@ import { defineComponent } from 'vue';
                 } catch(err) {
                     alert(err);
                 }
-            }
+            },
+            async getComments() {
+                try {
+                    const response = await axios.get(`http://localhost:3001/get-comments-for-article/${this.article.id}`, {
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`
+                        }
+                    });
+
+                    if (response.status == 200) {
+                        this.commentaries = response.data;
+                    }
+                } catch(err) {
+                    alert(err);
+                } finally {
+                    this.loadingComments = false;
+                }
+            } 
         }
     }) ;
 

@@ -258,6 +258,40 @@ app.get('/user-name-by-id/:id', authToken, (req, res) => {
     })
 })
 
+app.get('/get-comments-for-article/:articleId', authToken, (req, res) => {
+    const articleId = req.params.articleId;
+
+    const sql = `
+        SELECT comments.id, comments.text_content, comments.created_at,
+               users.name AS author_name, comments.parent_comment_id
+        FROM comments
+        JOIN users ON comments.author_id = users.id
+        WHERE comments.article_id = ?;
+    `;
+
+    db.all(sql, [articleId], (err, rows) => {
+        if (err) {
+            console.error('Ошибка при получении комментариев:', err.message);
+            return res.status(500).send({ error: 'Ошибка при получении комментариев' });
+        }
+
+        if (rows.length === 0) {
+            return res.status(404).send({ error: 'Комментарии не найдены' });
+        }
+
+        const commentsWithAuthors = rows.map(row => ({
+            id: row.id,
+            content: row.text_content,
+            date: row.created_at,
+            authorName: row.author_name,
+            parentCommentId: row.parent_comment_id
+        }));
+
+        console.log(commentsWithAuthors);
+        res.status(200).json(commentsWithAuthors);
+    });
+})
+
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
