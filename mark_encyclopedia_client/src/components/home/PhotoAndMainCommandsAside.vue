@@ -15,8 +15,8 @@
           </label>
         </div> 
         <ul v-else>
-          <li v-for="(state, index) in states" :key="index">
-            <a class="a">{{ state.title }}</a>
+          <li v-for="state in states" :key="state.id">
+            <router-link class="a" :to="`/articles/${state.id}`">{{ state.title }}</router-link>
           </li>
         </ul>
       </div>

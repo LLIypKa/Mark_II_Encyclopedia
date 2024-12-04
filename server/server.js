@@ -224,6 +224,21 @@ app.get('/articles/summary-top-3', authToken, (req, res) => {
     }
 });  
 
+app.get('/articles/:id', authToken, (req, res) => {
+    const { id } = req.params;
+    const sql = `SELECT id, title, content, author, created_at FROM articles WHERE id = ?`;
+    db.get(sql, [id], (err, row) => {
+        if (err) {
+            console.error(err.message);
+            res.status(500).send({ error: 'Ошибка сервера. Попробуйте позже.' });
+        } else if (!row) {
+            res.status(404).send({ error: 'Статья не найдена' });
+        } else {
+            res.status(200).json(row);
+        }
+    });
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
