@@ -12,6 +12,7 @@ const PORT = 3001;
 
 const {db, createToken, key} = require('./database/databaseConnection.js');
 const { error } = require('console');
+const { getEventListeners } = require('events');
 app.use('/usersCarsPhotos', express.static('usersCarsPhotos'));
 app.use('/profilePhotos', express.static('profilePhotos'));
 app.use('/usersCarsPhotos', express.static('usersCarsPhotos'));
@@ -290,6 +291,31 @@ app.get('/get-comments-for-article/:articleId', authToken, (req, res) => {
         console.log(commentsWithAuthors);
         res.status(200).json(commentsWithAuthors);
     });
+});
+
+app.post('/save-comment-to-article/:articleId', authToken, (req, res) => {
+    const {content, date} = req.body;
+    const articleId = req.params.articleId;
+
+    console.log("content:", content);
+    console.log("date:", date);
+    console.log("articleId:", articleId);
+
+    if (!content || content.trim().length === 0) {
+        return res.status(400).send({ error: 'Комментарий не может быть пустым' });
+    }
+
+    let sql = "INSERT INTO comments(article_id, author_id, text_content, created_at) VALUES (?, ?, ?, ?)";
+
+    db.run(sql, [articleId, req.user.id, content, date], (err, row) => {
+        if (err) {
+            console.log("Ошибка при сохранении данных\n" + err.message);
+            res.status(500).send({ error: 'Ошибка сервера. Попробуйте позже.' });
+        }
+        else {
+            res.status(200).send();
+        }
+    })
 })
 
 app.listen(PORT, () => {

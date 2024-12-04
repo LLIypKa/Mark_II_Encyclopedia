@@ -13,9 +13,9 @@
   <p v-if = "loadingComments">Загрузка комментариев</p>
   <div v-else>
     <h1>Комментарии</h1>
-    <v-form>
+    <v-form ref="form" @submit.prevent="saveComment">
         <v-text-field variant = "underlined" label = "Текст комментария" v-model="commentText"/>
-        <button type="submit">Оставить комментарий</button>
+        <v-btn type="submit">Оставить комментарий</v-btn>
     </v-form>
     <ul>
         <li v-for="comment in commentaries" :key="comment.id">
@@ -109,7 +109,36 @@ import { defineComponent } from 'vue';
                 } finally {
                     this.loadingComments = false;
                 }
-            } 
+            } ,
+            async saveComment() {
+                if (this.commentText == null || this.commentText.length <= 6) {
+                    alert("Введите комментарий")
+                    return;
+                }
+                try {
+                    const formData = new FormData();
+                    formData.append("content", this.commentText);
+                    formData.append("date", Date.now());
+                    
+                    const response = await axios.post(`http://localhost:3001/save-comment-to-article/${this.article.id}`, {
+                            content: this.commentText,
+                            date: new Date().toISOString(),
+                         }, {
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`
+                        }
+                    });
+
+                    if (response.status == 200) {
+                        alert("Коммент сохранён")
+                        
+                    }
+                } catch(err) {
+                    alert(err);
+                } finally {
+                    this.$router.go(0);
+                }
+            }
         }
     }) ;
 
