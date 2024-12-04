@@ -207,6 +207,23 @@ app.get('/get-car-desc-photos', authToken, (req, res) => {
     });
 });
 
+app.get('/articles/summary-top-3', authToken, (req, res) => {
+    try {
+        const sql = `SELECT id, title FROM articles ORDER BY created_at DESC LIMIT 3`;
+        db.all(sql, [], (err, rows) => {
+            if (err) {
+                console.error(err.message);
+                res.status(500).send({ error: 'Ошибка сервера. Последние статьи не загрузились. Попробуйте позже.' });
+            } else {
+                res.status(200).json(rows);
+            }
+        });
+    } catch (error) {
+        console.error(`Ошибка при получении списка статей: ${error.message}`);
+        res.status(500).send({ error: 'Ошибка сервера. Последние статьи не загрузились. Попробуйте позже.' });
+    }
+});  
+
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
