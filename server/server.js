@@ -226,7 +226,7 @@ app.get('/articles/summary-top-3', authToken, (req, res) => {
 
 app.get('/articles/:id', authToken, (req, res) => {
     const { id } = req.params;
-    const sql = `SELECT id, title, content, author, created_at FROM articles WHERE id = ?`;
+    const sql = `SELECT id, title, text_content, author_id, created_at FROM articles WHERE id = ?`;
     db.get(sql, [id], (err, row) => {
         if (err) {
             console.error(err.message);
@@ -234,6 +234,7 @@ app.get('/articles/:id', authToken, (req, res) => {
         } else if (!row) {
             res.status(404).send({ error: 'Статья не найдена' });
         } else {
+            console.log(row);
             res.status(200).json(row);
         }
     });
