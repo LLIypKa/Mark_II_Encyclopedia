@@ -76,6 +76,7 @@
       },
       async toChangeData() {
         this.$router.push('/changeData');
+      },
       async getTop3Articles() {
         try {
           const response = await axios.get(`http://localhost:3001/articles/summary-top-3`, {
