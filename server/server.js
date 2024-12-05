@@ -315,6 +315,25 @@ app.post('/save-comment-to-article/:articleId', authToken, (req, res) => {
         else {
             res.status(200).send();
         }
+    });
+});
+
+app.post('/create-article', authToken, (req, res) => {
+    const { newArticleTitle, newArticleContent, date } = req.body;
+
+    console.log("Создание статьи");
+    console.log("Title " + newArticleTitle);
+    console.log("Content " + newArticleContent);
+
+    let sql = "INSERT INTO articles(title, text_content, author_id, created_at) VALUES (?, ?, ?, ?)";
+
+    db.run(sql, [newArticleTitle, newArticleContent, req.user.id, date], (err, row) => {
+        if (err) {
+            console.log("Ошибка при сохранении статьи\n" + err.message);
+            res.status(500).send({ error: 'Ошиюка сервера. Попробуйте позже' });
+        } else {
+            res.status(200).send();
+        }
     })
 })
 
