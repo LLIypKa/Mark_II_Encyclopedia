@@ -1,4 +1,5 @@
 <template>
+    <br><br><br><br>
     <v-form @submit.prevent="createArticle">
         <v-text-field variant = "underlined" label = "Заголовок" v-model="newArticleTitle"/>
         <v-text-field variant = "underlined" label = "Заголовок" v-model="newArticleContent"/>
