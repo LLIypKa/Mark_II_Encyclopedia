@@ -22,7 +22,7 @@
       </div>
       <div class = "commandsDiv">
         <v-btn type = "button" class="logoutButtonBtn" @click = "logout">Выйти</v-btn>
-        <v-btn type = "button" class="changePersonalDataBtn">Изменить данные</v-btn>
+        <v-btn type = "button" class="changePersonalDataBtn" @click = "toChangeData">Изменить данные</v-btn>
         <v-btn type = "button" class="createNewStateBtn" @click = "toCreateNewArticle">Создать статью</v-btn>
       </div>
     </v-container>
@@ -74,6 +74,8 @@
       async logout() {
         this.$router.push('/login');
       },
+      async toChangeData() {
+        this.$router.push('/changeData');
       async getTop3Articles() {
         try {
           const response = await axios.get(`http://localhost:3001/articles/summary-top-3`, {
