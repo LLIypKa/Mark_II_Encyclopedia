@@ -49,7 +49,7 @@ const authToken = (req, res, next) => {
 
 app.post('/register', upload.fields([
     { name: 'profilePhoto', maxCount: 1 },
-    { name: 'usersCarsPhotos', maxCount: 10 }, // Укажите максимум файлов
+    { name: 'usersCarsPhotos', maxCount: 3 }, // Укажите максимум файлов
 ]), (req, res) => {
     const { email, password, name, status, car_desc } = req.body;
     console.log(req);
@@ -206,6 +206,70 @@ app.get('/get-car-desc-photos', authToken, (req, res) => {
         res.status(200).send({ photos });
     });
 });
+
+app.put("/user/:id", authToken, upload.fields([{ name: "profile_photo", maxCount: 1 }, { name: "car_photo", maxCount:3 }]), (req, res) => {
+    const userId = req.params.id;
+    const { name, email, users_status_text, users_car_desc } = req.body;
+    const profilePhotoPath = req.files?.profile_photo ? req.files.profile_photo[0].path : null;
+    const carPhotoPath = req.files?.car_photo ? req.files.car_photo[0].path : null;
+
+    const updates = [];
+    const values = [];
+
+    if (name) {
+        updates.push("name = ?");
+        values.push(name);
+    }
+    if (email) {
+        updates.push("email = ?");
+        values.push(email);
+    }
+    if (users_status_text) {
+        updates.push("users_status_text = ?");
+        values.push(users_status_text);
+    }
+    if (users_car_desc) {
+        updates.push("users_car_desc = ?");
+        values.push(users_car_desc);
+    }
+    if (profilePhotoPath) {
+        updates.push("profile_photo_path = ?");
+        values.push(profilePhotoPath);
+    }
+    if (carPhotoPath) {
+        updates.push("users_car_desc = ?");
+        values.push(carPhotoPath);
+    }
+
+    values.push(userId);
+
+    const sql = `UPDATE users SET ${updates.join(", ")} WHERE id = ? `;
+
+    db.run(sql, values, (err) => {
+        if (err) {
+            console.error("Ошибка при обновлении данных пользователя:", err.message);
+            res.status(500).send({ error: "Ошибка сервера" });
+        } else {
+            const newToken = createToken(req.user, key);
+            res.status(200).send({ message: "Данные успешно обновлены", token: newToken });
+        }
+    });
+});
+
+app.get("/user/me", authToken, (req, res) => {
+    const userId = req.user.id;
+
+    const sql = "SELECT name, email, users_status_text, users_car_desc FROM users WHERE id = ?";
+    db.get(sql, [userId], (err, row) => {
+        if (err || !row) {
+            console.error("Ошибка при получении данных пользователя:", err);
+            return res.status(404).send({ error: "Пользователь не найден" });
+        }
+        
+        res.status(200).send(row);
+    });
+});
+
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
