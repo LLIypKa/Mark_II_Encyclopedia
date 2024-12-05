@@ -1,0 +1,150 @@
+<template>
+    
+  <div v-if="loadingArticle">
+    <p>Загрузка статьи...</p>
+  </div>
+  <div v-else-if="article && authorName">
+    <h1>{{ article.title }}</h1>
+    <p>{{ article.text_content }}</p>
+    <p>Автор: {{ authorName.name }}</p>
+    <p>Дата публикации: {{ article.created_at }}</p>
+  </div>
+  <p v-else>Статья не найдена или ошибка загрузки.</p>
+  <p v-if = "loadingComments">Загрузка комментариев</p>
+  <div v-else>
+    <h1>Комментарии</h1>
+    <v-form ref="form" @submit.prevent="saveComment">
+        <v-text-field variant = "underlined" label = "Текст комментария" v-model="commentText"/>
+        <v-btn type="submit">Оставить комментарий</v-btn>
+    </v-form>
+    <ul>
+        <li v-for="comment in commentaries" :key="comment.id">
+            <div>
+                <p>{{ comment.authorName }}</p>
+                <p>{{ comment.content }}, {{ comment.date }}</p>
+            </div>
+        </li>
+    </ul>
+  </div>
+</template>
+
+<script>
+    import axios from 'axios';
+import { defineComponent } from 'vue';
+
+    export default defineComponent({
+        name: 'ArticleView',
+        data() {
+            return {
+                token: sessionStorage.getItem("token") == null ? null : sessionStorage.getItem("token"),
+                article: null,
+                loadingArticle: true,
+                loadingComments: true,
+                authorName: null,
+                commentaries: [],
+                commentText: null,
+                commentTextRules: [
+                    v => !!v || "Текст обязателен",
+                    v => (v.length >= 6) || "Комментарий должен быть длинее 6 символов"
+                ]
+
+            }
+        },
+        mounted() {
+            this.getArticle();
+        },
+        methods: {
+            async getArticle() {
+                try {
+                    let articleId = this.$route.params.id;
+                    const response = await axios.get(`http://localhost:3001/articles/${articleId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`
+                        }
+                    });
+
+                    if (response.status === 200) {
+                        this.article = response.data;
+                        console.log("Данные статьи:", this.article);
+                    } else {
+                        alert("Ошибка сервера. Код статуса:", response.status);
+                    }
+                } catch (err) {
+                    alert(err);
+                }
+                finally {
+                    this.loadingArticle = false;
+                    this.getAuthorName();
+                    this.getComments();
+                }
+            },
+            async getAuthorName() {
+                try { 
+                    const response = await axios.get(`http://localhost:3001/user-name-by-id/${this.article.author_id}`, {
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`
+                        }
+                    });
+
+                    if (response.status == 200) {
+                        this.authorName = response.data;
+                    }
+                } catch(err) {
+                    alert(err);
+                }
+            },
+            async getComments() {
+                try {
+                    const response = await axios.get(`http://localhost:3001/get-comments-for-article/${this.article.id}`, {
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`
+                        }
+                    });
+
+                    if (response.status == 200) {
+                        this.commentaries = response.data;
+                    }
+                } catch(err) {
+                    alert(err);
+                } finally {
+                    this.loadingComments = false;
+                }
+            } ,
+            async saveComment() {
+                if (this.commentText == null || this.commentText.length <= 6) {
+                    alert("Введите комментарий")
+                    return;
+                }
+                try {
+                    const formData = new FormData();
+                    formData.append("content", this.commentText);
+                    formData.append("date", Date.now());
+                    
+                    const response = await axios.post(`http://localhost:3001/save-comment-to-article/${this.article.id}`, {
+                            content: this.commentText,
+                            date: new Date().toISOString(),
+                         }, {
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`
+                        }
+                    });
+
+                    if (response.status == 200) {
+                        alert("Коммент сохранён")
+                        
+                    }
+                } catch(err) {
+                    alert(err);
+                } finally {
+                    this.$router.go(0);
+                }
+            }
+        }
+    }) ;
+
+    
+</script>
+
+<styles>
+
+</styles>

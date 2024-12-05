@@ -9,14 +9,21 @@
           <v-text-field placeholder="Введите название статьи" v-model="stateName" hide-details="true" class="v-text-field"/>
         </v-form>
         <label class="labelInInputDiv">Последние статьи</label>
-        <a class="a">История маркообразных. Часть 2</a>
-        <a class="a">Как я марка из Японии возил =)</a>
-        <a class="a">Двигатель 1jz-gte. Часть 1. Строение</a>
+        <div v-if="this.loading">
+          <label class="label">
+            Загрузка...
+          </label>
+        </div> 
+        <ul v-else>
+          <li v-for="state in states" :key="state.id">
+            <router-link class="a" :to="`/articles/${state.id}`">{{ state.title }}</router-link>
+          </li>
+        </ul>
       </div>
       <div class = "commandsDiv">
         <v-btn type = "button" class="logoutButtonBtn" @click = "logout">Выйти</v-btn>
         <v-btn type = "button" class="changePersonalDataBtn" @click = "toChangeData">Изменить данные</v-btn>
-        <v-btn type = "button" class="createNewStateBtn">Создать статью</v-btn>
+        <v-btn type = "button" class="createNewStateBtn" @click = "toCreateNewArticle">Создать статью</v-btn>
       </div>
     </v-container>
 </template>
@@ -33,12 +40,15 @@
         token: sessionStorage.getItem("token") == null ? null : sessionStorage.getItem("token"),
         profilePhotoUrl: null,
         id: null,
-        stateName: null
+        stateName: null,
+        states: [],
+        loading: true
       };
     },
     mounted() {
       this.getProfilePhoto();
       this.getUserId();
+      this.getTop3Articles();
     },
     methods: {
       async getProfilePhoto() {
@@ -66,6 +76,22 @@
       },
       async toChangeData() {
         this.$router.push('/changeData');
+      async getTop3Articles() {
+        try {
+          const response = await axios.get(`http://localhost:3001/articles/summary-top-3`, {
+             headers: {
+                'Authorization': `Bearer ${this.token}`
+              }
+          });
+
+          this.states = response.data;
+          this.loading = !this.loading;
+        } catch (ex) {
+          alert(`Ошибка при загрузке последних статей ${ex}`);
+        }
+      },
+      async toCreateNewArticle() {
+        this.$router.push('/create-article');
       }
     }
   }
@@ -169,9 +195,12 @@
     background: linear-gradient(to right, #2042ff, 50%, #b200ff);
     color: #ffffff;
     font-size: 3vh;
-    width: 100%;
+    width: 100%; /* или можно установить max-width */
+    white-space: nowrap; /* чтобы предотвратить перенос */
     border-radius: 5px;
     margin-bottom: 1%;
+    display: inline-block;
     padding-left: 1%;
+    padding-right: 0%;
   }
 </style>
