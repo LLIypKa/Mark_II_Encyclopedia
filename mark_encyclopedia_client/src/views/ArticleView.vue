@@ -70,7 +70,7 @@ import { defineComponent } from 'vue';
                         alert("Ошибка сервера. Код статуса:", response.status);
                     }
                 } catch (err) {
-                    alert(err);
+                    console.log(err);
                 }
                 finally {
                     this.loadingArticle = false;
@@ -90,7 +90,7 @@ import { defineComponent } from 'vue';
                         this.authorName = response.data;
                     }
                 } catch(err) {
-                    alert(err);
+                    console.log(err);
                 }
             },
             async getComments() {
@@ -105,7 +105,7 @@ import { defineComponent } from 'vue';
                         this.commentaries = response.data;
                     }
                 } catch(err) {
-                    alert(err);
+                    console.log(err);
                 } finally {
                     this.loadingComments = false;
                 }
