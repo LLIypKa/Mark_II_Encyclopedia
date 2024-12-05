@@ -15,7 +15,7 @@ import PhotoAndMainCommandsAsideComponent from '../components/home/PhotoAndMainC
 export default defineComponent({
   name: 'HomeView',
   mounted() {
-    const token = sessionStorage.getItem('token');
+    const token = localStorage.getItem('token');
     if (!token) {
       this.$router.push('/login');
     }

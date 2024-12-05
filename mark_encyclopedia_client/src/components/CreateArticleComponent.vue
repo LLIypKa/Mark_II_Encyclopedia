@@ -14,7 +14,7 @@ import axios from 'axios';
         name: 'CreateArticleComponent',
         data() {
             return {
-                token: sessionStorage.getItem("token") == null ? null : sessionStorage.getItem("token"),
+                token: localStorage.getItem('token') == null ? null : localStorage.getItem('token'),
                 newArticleTitle: null,
                 newArticleContent: null
             }

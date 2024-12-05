@@ -33,7 +33,7 @@
         name: "EditUser",
         data() {
             return {
-                token: sessionStorage.getItem("token"),
+                token: localStorage.getItem('token'),
                 userId: null,
                 userData: {
                     name: "",

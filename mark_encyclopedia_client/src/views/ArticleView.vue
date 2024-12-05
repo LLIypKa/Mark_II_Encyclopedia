@@ -36,7 +36,7 @@ import { defineComponent } from 'vue';
         name: 'ArticleView',
         data() {
             return {
-                token: sessionStorage.getItem("token") == null ? null : sessionStorage.getItem("token"),
+                token: localStorage.getItem('token') == null ? null : localStorage.getItem('token'),
                 article: null,
                 loadingArticle: true,
                 loadingComments: true,

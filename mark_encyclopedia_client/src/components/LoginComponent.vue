@@ -50,7 +50,7 @@
                         });
                         if (response.status == 200 || response.status == 201) {
                             let token = response.data.token;
-                            sessionStorage.setItem('token', token);
+                            localStorage.setItem('token', token);
                             router.push('/home');
                         }
                         
