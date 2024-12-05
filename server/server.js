@@ -12,6 +12,7 @@ const PORT = 3001;
 
 const {db, createToken, key} = require('./database/databaseConnection.js');
 const { error } = require('console');
+const { getEventListeners } = require('events');
 app.use('/usersCarsPhotos', express.static('usersCarsPhotos'));
 app.use('/profilePhotos', express.static('profilePhotos'));
 app.use('/usersCarsPhotos', express.static('usersCarsPhotos'));
@@ -206,6 +207,135 @@ app.get('/get-car-desc-photos', authToken, (req, res) => {
         res.status(200).send({ photos });
     });
 });
+
+app.get('/articles/summary-top-3', authToken, (req, res) => {
+    try {
+        const sql = `SELECT id, title FROM articles ORDER BY created_at DESC LIMIT 3`;
+        db.all(sql, [], (err, rows) => {
+            if (err) {
+                console.error(err.message);
+                res.status(500).send({ error: 'Ошибка сервера. Последние статьи не загрузились. Попробуйте позже.' });
+            } else {
+                res.status(200).json(rows);
+            }
+        });
+    } catch (error) {
+        console.error(`Ошибка при получении списка статей: ${error.message}`);
+        res.status(500).send({ error: 'Ошибка сервера. Последние статьи не загрузились. Попробуйте позже.' });
+    }
+});  
+
+app.get('/articles/:id', authToken, (req, res) => {
+    const { id } = req.params;
+    const sql = `SELECT id, title, text_content, author_id, created_at FROM articles WHERE id = ?`;
+    db.get(sql, [id], (err, row) => {
+        if (err) {
+            console.error(err.message);
+            res.status(500).send({ error: 'Ошибка сервера. Попробуйте позже.' });
+        } else if (!row) {
+            res.status(404).send({ error: 'Статья не найдена' });
+        } else {
+            console.log(row);
+            res.status(200).json(row);
+        }
+    });
+});
+
+app.get('/user-name-by-id/:id', authToken, (req, res) => {
+    const id = req.params.id;
+    const sql = "SELECT name FROM users WHERE id = ?";
+
+    db.get(sql, [id], (err, row) => {
+        if (err) {
+            console.error(err.message);
+            res.status(500).send({error: "Ошибка при получении данных автора"});
+        } else if (!row) {
+            res.status(404).send({error: "Ошибка"});
+        }
+        else {
+            console.log(row);
+            res.status(200).json(row);
+        }
+    })
+})
+
+app.get('/get-comments-for-article/:articleId', authToken, (req, res) => {
+    const articleId = req.params.articleId;
+
+    const sql = `
+        SELECT comments.id, comments.text_content, comments.created_at,
+               users.name AS author_name, comments.parent_comment_id
+        FROM comments
+        JOIN users ON comments.author_id = users.id
+        WHERE comments.article_id = ?;
+    `;
+
+    db.all(sql, [articleId], (err, rows) => {
+        if (err) {
+            console.error('Ошибка при получении комментариев:', err.message);
+            return res.status(500).send({ error: 'Ошибка при получении комментариев' });
+        }
+
+        if (rows.length === 0) {
+            return res.status(404).send({ error: 'Комментарии не найдены' });
+        }
+
+        const commentsWithAuthors = rows.map(row => ({
+            id: row.id,
+            content: row.text_content,
+            date: row.created_at,
+            authorName: row.author_name,
+            parentCommentId: row.parent_comment_id
+        }));
+
+        console.log(commentsWithAuthors);
+        res.status(200).json(commentsWithAuthors);
+    });
+});
+
+app.post('/save-comment-to-article/:articleId', authToken, (req, res) => {
+    const {content, date} = req.body;
+    const articleId = req.params.articleId;
+
+    console.log("content:", content);
+    console.log("date:", date);
+    console.log("articleId:", articleId);
+
+    if (!content || content.trim().length === 0) {
+        return res.status(400).send({ error: 'Комментарий не может быть пустым' });
+    }
+
+    let sql = "INSERT INTO comments(article_id, author_id, text_content, created_at) VALUES (?, ?, ?, ?)";
+
+    db.run(sql, [articleId, req.user.id, content, date], (err, row) => {
+        if (err) {
+            console.log("Ошибка при сохранении данных\n" + err.message);
+            res.status(500).send({ error: 'Ошибка сервера. Попробуйте позже.' });
+        }
+        else {
+            res.status(200).send();
+        }
+    });
+});
+
+app.post('/create-article', authToken, (req, res) => {
+    const { newArticleTitle, newArticleContent, date } = req.body;
+
+    console.log("Создание статьи");
+    console.log("Title " + newArticleTitle);
+    console.log("Content " + newArticleContent);
+
+    let sql = "INSERT INTO articles(title, text_content, author_id, created_at) VALUES (?, ?, ?, ?)";
+
+    db.run(sql, [newArticleTitle, newArticleContent, req.user.id, date], (err, row) => {
+        if (err) {
+            console.log("Ошибка при сохранении статьи\n" + err.message);
+            res.status(500).send({ error: 'Ошиюка сервера. Попробуйте позже' });
+        } else {
+            res.status(200).send();
+        }
+    })
+})
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
