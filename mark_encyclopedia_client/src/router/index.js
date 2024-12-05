@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import LoginComponent from '../components/LoginComponent.vue'
 import RegistrationComponent from '@/components/RegistrationComponent.vue'
 import ArticleView from '@/views/ArticleView.vue';
+import CreateArticleComponent from '@/components/CreateArticleComponent.vue';
 
 const routes = [
   {
@@ -40,6 +41,14 @@ const routes = [
     path: '/articles/:id', 
     name: 'article', 
     component: ArticleView,
+    meta: {
+      requireAuth: true
+    }
+  },
+  {
+    path: '/create-article',
+    name: 'create_article',
+    component: CreateArticleComponent,
     meta: {
       requireAuth: true
     }

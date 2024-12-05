@@ -23,7 +23,7 @@
       <div class = "commandsDiv">
         <v-btn type = "button" class="logoutButtonBtn" @click = "logout">Выйти</v-btn>
         <v-btn type = "button" class="changePersonalDataBtn">Изменить данные</v-btn>
-        <v-btn type = "button" class="createNewStateBtn">Создать статью</v-btn>
+        <v-btn type = "button" class="createNewStateBtn" @click = "toCreateNewArticle">Создать статью</v-btn>
       </div>
     </v-container>
 </template>
@@ -87,6 +87,9 @@
         } catch (ex) {
           alert(`Ошибка при загрузке последних статей ${ex}`);
         }
+      },
+      async toCreateNewArticle() {
+        this.$router.push('/create-article');
       }
     }
   }
