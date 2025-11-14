@@ -17,8 +17,6 @@ async function startServer() {
         await db.migrate.latest();
         console.log('Database migrations completed');
 
-        await db.destroy();
-
         app.listen(PORT, () => {
             console.log(`Сервер запущен на http://localhost:${PORT}`);
         });
