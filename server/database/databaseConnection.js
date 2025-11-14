@@ -6,7 +6,7 @@ const multer = require('multer');
 const fs = require('fs');
 
 const dbPath = path.resolve(__dirname, "base.db")
-const profilePhotosFolder = 'C:/Users/LLIypuK/Desktop/Mark_II_Encyclopedia/Mark_II_Encyclopedia/server/profilePhotos';
+const profilePhotosFolder = './profilePhotos';
 if (!fs.existsSync(profilePhotosFolder)) {
     fs.mkdirSync(profilePhotosFolder);
 }
