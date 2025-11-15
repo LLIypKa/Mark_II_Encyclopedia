@@ -7,6 +7,9 @@ const app = express();
 const PORT = process.env.PORT;
 const db = knex(knexConfig.development);
 
+app.use(express.json());
+app.use('/api/users', require('./routes/userRoutes'));
+
 async function startServer() {
     try {
         console.log('Checking database connection and migrations');
