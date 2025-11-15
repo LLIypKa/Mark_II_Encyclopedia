@@ -12,11 +12,11 @@ module.exports = {
             port: process.env.DB_PORT,
         },
         migrations: {
-            directory: path.join(__dirname, 'migrations'),
+            directory: path.join(__dirname, 'database/migrations'),
             tableName: 'knex_migrations'
         },
         seeds: {
-            directory: path.join(__dirname, 'seeds')
+            directory: path.join(__dirname, 'database/seeds')
         }
     }
 }

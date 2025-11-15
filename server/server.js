@@ -1,14 +1,14 @@
 const express = require("express");
 const knex = require('knex');
-const knexConfig = require('./database/database_connection');
+const knexConfig = require('./knexfile');
 require('dotenv').config(); 
 
 const app = express();
 const PORT = process.env.PORT;
+const db = knex(knexConfig.development);
 
 async function startServer() {
     try {
-        const db = knex(knexConfig.development);
         console.log('Checking database connection and migrations');
 
         await db.raw('SELECT 1');
@@ -26,4 +26,5 @@ async function startServer() {
     }
 }
 
+module.exports = { app, db };
 startServer();
