@@ -3,3 +3,4 @@ database/base.db
 server/profilePhotos
 server/usersCarsPhotos
 *.jpg
+.env
