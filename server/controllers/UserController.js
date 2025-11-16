@@ -79,10 +79,14 @@ class UserController {
     getProfile = async (req, res) => {
         try {
             const user = await this.userService.getProfile(req.user.id);
+            const statusPhotos = await this.userService.getUserStatusPhotos(req.user.id);
             
             res.json({
                 success: true,
-                data: user
+                data: {
+                    user: user, 
+                    statusPhotos: statusPhotos
+                }
             });
         } catch (error) {
             console.error('Profile error:', error);

@@ -2,6 +2,7 @@ const express = require("express");
 const knex = require('knex');
 const knexConfig = require('./knexfile');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config(); 
 
 const app = express();
@@ -11,6 +12,10 @@ const db = knex(knexConfig.development);
 app.use(express.json());
 app.use(cors());
 app.use('/api/users', require('./routes/userRoutes'));
+
+app.use('/usersStatusPhotos', express.static(path.join(__dirname, 'usersStatusPhotos')));
+app.use('/profilePhotos', express.static(path.join(__dirname, 'profilePhotos')));
+app.use('/usersCarsPhotos', express.static(path.join(__dirname, 'usersCarsPhotos')));
 
 async function startServer() {
     try {

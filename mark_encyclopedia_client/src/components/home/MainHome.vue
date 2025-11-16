@@ -26,15 +26,11 @@
 
 <script>
   import axios from 'axios';
-  import {jwtDecode} from 'jwt-decode'
 
   export default {
     
     name: 'MainHomeComponent',
     mounted() {
-      //this.getUsersStatus();
-      //this.getUserName();
-      //this.getCarDesc();
       //this.getPhotos();
       this.getProfile();
     },
@@ -56,75 +52,18 @@
                 'Authorization': `Bearer ${this.token}`
               }
             });
-            const userData = response.data.data;
+            alert(response);
+            const userData = response.data.data.user;
             this.name = userData.name;
             this.status = userData.users_status_text;
             this.carDesc = userData.users_car_desc;
+            this.statusPhotos = response.data.data.statusPhotos.map(photoObj => photoObj.photo_path);
           }
           catch (error) {
             alert(`Не удалось загрузить статус профиля - ${error}`);
           }
         }
-      },
-      async getUsersStatus () {
-        /*if (this.token != null) {
-          try {
-            const response = await axios.get(`http://localhost:3001/users-status`, {
-              headers: {
-                'Authorization': `Bearer ${this.token}`
-              },
-              responseType: 'text'
-            });
-            this.status = response.data;
-          }
-          catch (error) {
-            alert(`Не удалось загрузить статус профиля - ${error}`);
-          }
-        }*/
-        const decodedToken = jwtDecode(this.token);
-        this.status = decodedToken.user_status_text;
-      },
-      async getUserName() {
-        const decodedToken = jwtDecode(this.token);
-        this.name = decodedToken.name;
-      },
-      async getCarDesc() {
-        /*if (this.token != null) {
-          try {
-            const response = await axios.get(`http://localhost:3001/users-car-desc`, {
-              headers: {
-                'Authorization': `Bearer ${this.token}`
-              },
-              responseType: 'text'
-            });
-            this.carDesc = response.data;
-          }
-          catch (error) {
-            alert(`Не удалось загрузить описание машины - ${error}`);
-          }
-        }*/
-        const decodedToken = jwtDecode(this.token);
-        this.carDesc = decodedToken.user_car_desc;
-      },
-      /*async getPhotos() {
-        if (this.token != null) {
-          try {
-            const response = await axios.get(`http://localhost:3001/api/users/photos/cars`, {
-              headers: {
-                'Authorization': `Bearer ${this.token}`
-              }
-            });
-
-            console.log(response.data)
-            /*for (let photo in response.data.photos) {
-              this.statusPhotos.push(URL.createObjectURL(photo));
-            }
-            this.statusPhotos = response.data.photos; // Предполагается, что API возвращает массив путей к фото
-          } catch (error) {
-            alert(`Не удалось загрузить фотографии статуса - ${error}`);
-          }*/
-        //}
-      //}
+      }
     }
   }
 </script>

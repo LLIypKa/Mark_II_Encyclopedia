@@ -116,7 +116,7 @@ class UserService {
     async getUserStatusPhotos(userId) {
         const photos = await this.database('user_status_photos')
             .where({ user_id: userId })
-            .select('id', 'photo_path');
+            .select('photo_path');
 
         return photos;
     }
