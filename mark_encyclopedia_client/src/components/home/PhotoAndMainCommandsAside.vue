@@ -30,7 +30,6 @@
 
 <script>
   import axios from 'axios';
-  import {jwtDecode} from 'jwt-decode'
 
   export default {
     name: 'PhotoAndMainCommandsAsideComponent',
@@ -46,38 +45,37 @@
       };
     },
     mounted() {
-      //this.getProfilePhoto();
-      this.getUserId();
-      //this.getTop3Articles();
+      this.getProfile();
     },
     methods: {
-      async getProfilePhoto() {
+      async getProfile() {
         if (this.token != null) {
           try {
-            const response = await axios.get(`http://localhost:3001/profile-photo`, {
+            const response = await axios.get(`http://localhost:3001/api/users/profile`, {
               headers: {
                 'Authorization': `Bearer ${this.token}`
-              },
-              responseType: 'blob'
+              }
             });
-            this.profilePhotoUrl = URL.createObjectURL(response.data);
+            const userData = response.data.data.user;
+            this.id = userData.id;
+            this.profilePhotoUrl = 'http://localhost:3001/' + userData.profile_photo_path;
           }
           catch (error) {
-            alert(`Не удалось загрузить фото профиля - ${error}`)
+            alert(`Не удалось загрузить статус профиля - ${error}`);
           }
         }
       },
-      async getUserId() {
+      /*async getUserId() {
         const decodedToken = jwtDecode(this.token);
         this.id = decodedToken.id;
-      },
+      },*/
       async logout() {
         this.$router.push('/login');
       },
       async toChangeData() {
         this.$router.push('/changeData');
       },
-      async getTop3Articles() {
+      /*async getTop3Articles() {
         try {
           const response = await axios.get(`http://localhost:3001/articles/summary-top-3`, {
              headers: {
@@ -90,7 +88,7 @@
         } catch (ex) {
           alert(`Ошибка при загрузке последних статей ${ex}`);
         }
-      },
+      },*/
       async toCreateNewArticle() {
         this.$router.push('/create-article');
       }

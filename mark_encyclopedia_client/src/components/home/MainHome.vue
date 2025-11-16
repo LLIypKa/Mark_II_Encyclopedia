@@ -52,7 +52,6 @@
                 'Authorization': `Bearer ${this.token}`
               }
             });
-            alert(response);
             const userData = response.data.data.user;
             this.name = userData.name;
             this.status = userData.users_status_text;
