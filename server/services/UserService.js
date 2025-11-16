@@ -60,12 +60,9 @@ class UserService {
 
         // Генерируем токен
         const token = JWTService.generateToken({ 
-            id: user.id,
+            id: userId,
             email: user.email,
             name: user.name,
-            user_status_text: user.users_status_photos,
-            user_car_desc: user.users_car_desc,
-            created_at: user.created_at
         });
 
         return {
@@ -93,9 +90,6 @@ class UserService {
             id: user.id,
             email: user.email,
             name: user.name,
-            user_status_text: user.users_status_text,
-            user_car_desc: user.users_car_desc,
-            created_at: user.created_at
         });
 
         const { password: _, ...userWithoutPassword } = user;
@@ -106,9 +100,9 @@ class UserService {
         };
     }
 
-    async getProfile(userId) {
+    async getProfile(id) {
         const user = await this.database('users')
-            .where({ id: userId })
+            .where({ id })
             .select('id', 'email', 'name', 'profile_photo_path', 'users_status_text', 'users_car_desc', 'created_at')
             .first();
 

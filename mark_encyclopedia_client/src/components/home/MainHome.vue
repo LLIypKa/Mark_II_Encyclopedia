@@ -25,17 +25,18 @@
 </template>
 
 <script>
-  //import axios from 'axios';
+  import axios from 'axios';
   import {jwtDecode} from 'jwt-decode'
 
   export default {
     
     name: 'MainHomeComponent',
     mounted() {
-      this.getUsersStatus();
-      this.getUserName();
-      this.getCarDesc();
+      //this.getUsersStatus();
+      //this.getUserName();
+      //this.getCarDesc();
       //this.getPhotos();
+      this.getProfile();
     },
     data() {
       return {
@@ -47,6 +48,24 @@
       }
     },
     methods: {
+      async getProfile() {
+        if (this.token != null) {
+          try {
+            const response = await axios.get(`http://localhost:3001/api/users/profile`, {
+              headers: {
+                'Authorization': `Bearer ${this.token}`
+              }
+            });
+            const userData = response.data.data;
+            this.name = userData.name;
+            this.status = userData.users_status_text;
+            this.carDesc = userData.users_car_desc;
+          }
+          catch (error) {
+            alert(`Не удалось загрузить статус профиля - ${error}`);
+          }
+        }
+      },
       async getUsersStatus () {
         /*if (this.token != null) {
           try {

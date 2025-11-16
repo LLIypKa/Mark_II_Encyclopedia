@@ -25,7 +25,6 @@ const upload = multer({
 });
 
 router.get('/', userController.getUsers);
-router.get('/:id', authUtil, userController.getUserById);
 router.get('/profile', authUtil, userController.getProfile);
 router.get('/photos/status', authUtil, userController.getStatusPhotos);
 router.get('/photos/cars', authUtil, userController.getCarPhotos);
@@ -34,5 +33,7 @@ router.post('/register', upload.fields([
     { name: 'usersCarsPhotos', maxCount: 3 },
 ]), userController.register);
 router.post('/login', userController.login);
+
+router.get('/:id', authUtil, userController.getUserById);
 
 module.exports = router;
