@@ -46,9 +46,9 @@
       };
     },
     mounted() {
-      this.getProfilePhoto();
+      //this.getProfilePhoto();
       this.getUserId();
-      this.getTop3Articles();
+      //this.getTop3Articles();
     },
     methods: {
       async getProfilePhoto() {

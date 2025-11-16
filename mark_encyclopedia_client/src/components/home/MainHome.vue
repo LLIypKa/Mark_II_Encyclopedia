@@ -25,7 +25,7 @@
 </template>
 
 <script>
-  import axios from 'axios';
+  //import axios from 'axios';
   import {jwtDecode} from 'jwt-decode'
 
   export default {
@@ -35,7 +35,7 @@
       this.getUsersStatus();
       this.getUserName();
       this.getCarDesc();
-      this.getPhotos();
+      //this.getPhotos();
     },
     data() {
       return {
@@ -48,7 +48,7 @@
     },
     methods: {
       async getUsersStatus () {
-        if (this.token != null) {
+        /*if (this.token != null) {
           try {
             const response = await axios.get(`http://localhost:3001/users-status`, {
               headers: {
@@ -61,14 +61,16 @@
           catch (error) {
             alert(`Не удалось загрузить статус профиля - ${error}`);
           }
-        }
+        }*/
+        const decodedToken = jwtDecode(this.token);
+        this.status = decodedToken.user_status_text;
       },
       async getUserName() {
         const decodedToken = jwtDecode(this.token);
         this.name = decodedToken.name;
       },
       async getCarDesc() {
-        if (this.token != null) {
+        /*if (this.token != null) {
           try {
             const response = await axios.get(`http://localhost:3001/users-car-desc`, {
               headers: {
@@ -81,12 +83,14 @@
           catch (error) {
             alert(`Не удалось загрузить описание машины - ${error}`);
           }
-        }
+        }*/
+        const decodedToken = jwtDecode(this.token);
+        this.carDesc = decodedToken.user_car_desc;
       },
-      async getPhotos() {
+      /*async getPhotos() {
         if (this.token != null) {
           try {
-            const response = await axios.get(`http://localhost:3001/get-car-desc-photos`, {
+            const response = await axios.get(`http://localhost:3001/api/users/photos/cars`, {
               headers: {
                 'Authorization': `Bearer ${this.token}`
               }
@@ -95,13 +99,13 @@
             console.log(response.data)
             /*for (let photo in response.data.photos) {
               this.statusPhotos.push(URL.createObjectURL(photo));
-            }*/
+            }
             this.statusPhotos = response.data.photos; // Предполагается, что API возвращает массив путей к фото
           } catch (error) {
             alert(`Не удалось загрузить фотографии статуса - ${error}`);
-          }
-        }
-      }
+          }*/
+        //}
+      //}
     }
   }
 </script>
