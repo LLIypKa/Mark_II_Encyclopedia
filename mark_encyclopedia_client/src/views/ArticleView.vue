@@ -57,14 +57,14 @@ import { defineComponent } from 'vue';
             async getArticle() {
                 try {
                     let articleId = this.$route.params.id;
-                    const response = await axios.get(`http://localhost:3001/articles/${articleId}`, {
+                    const response = await axios.get(`http://localhost:3001/api/articles/${articleId}`, {
                         headers: {
                             'Authorization': `Bearer ${this.token}`
                         }
                     });
 
                     if (response.status === 200) {
-                        this.article = response.data;
+                        this.article = response.data.data;
                         console.log("Данные статьи:", this.article);
                     } else {
                         alert("Ошибка сервера. Код статуса:", response.status);
@@ -80,14 +80,14 @@ import { defineComponent } from 'vue';
             },
             async getAuthorName() {
                 try { 
-                    const response = await axios.get(`http://localhost:3001/user-name-by-id/${this.article.author_id}`, {
+                    const response = await axios.get(`http://localhost:3001/api/users/getUserNameById/${this.article.author_id}`, {
                         headers: {
                             'Authorization': `Bearer ${this.token}`
                         }
                     });
 
                     if (response.status == 200) {
-                        this.authorName = response.data;
+                        this.authorName = response.data.data;
                     }
                 } catch(err) {
                     console.log(err);

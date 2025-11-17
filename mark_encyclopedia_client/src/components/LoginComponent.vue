@@ -61,7 +61,7 @@
                 }
             },
             async toRegister() {
-                router.push('/api/users/register');
+                router.push('/register');
             }
         }
     }

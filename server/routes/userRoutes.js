@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
@@ -28,6 +28,7 @@ router.get('/', userController.getUsers);
 router.get('/profile', authUtil, userController.getProfile);
 router.get('/photos/status', authUtil, userController.getStatusPhotos);
 router.get('/photos/cars', authUtil, userController.getCarPhotos);
+router.get('/getUserNameById/:id', userController.getUserNameById);
 router.post('/register', upload.fields([
     { name: 'profilePhoto', maxCount: 1 },
     { name: 'usersCarsPhotos', maxCount: 3 },

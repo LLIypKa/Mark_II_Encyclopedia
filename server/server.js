@@ -12,6 +12,7 @@ const db = knex(knexConfig.development);
 app.use(express.json());
 app.use(cors());
 app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/articles', require('./routes/ArticlesRoutes'));
 
 app.use('/usersStatusPhotos', express.static(path.join(__dirname, 'usersStatusPhotos')));
 app.use('/profilePhotos', express.static(path.join(__dirname, 'profilePhotos')));

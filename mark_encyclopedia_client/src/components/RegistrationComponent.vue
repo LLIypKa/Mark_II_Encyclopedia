@@ -74,7 +74,7 @@
                         for (let i = 0; i < this.cars_photo.length; i++) {
                             formData.append('usersCarsPhotos', this.cars_photo[i]);
                         }
-                        const response = await axios.post('http://localhost:3001/register', formData, {
+                        const response = await axios.post('http://localhost:3001/api/users/register', formData, {
                             headers: {
                                 'Content-Type': 'multipart/form-data',
                             },

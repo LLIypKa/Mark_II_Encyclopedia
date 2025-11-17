@@ -128,6 +128,19 @@ class UserService {
 
         return photos;
     }
+
+    async getUserName(userId) {
+        const user = await this.database('users')
+            .where({ id: userId })
+            .select('name')
+            .first();
+
+        if (!user) {
+            throw new Error('User not found');
+        }
+        
+        return user;
+    }
 }
 
 module.exports = UserService;

@@ -1,14 +1,14 @@
-const db = require('./database/database_queries')
+const db = require('../database/database_queries')
 
 class ArticleService {
-  constructor(database) {
+  constructor() {
     this.database = db;
   }
   async findAll() {
     const articles = await this.database('articles')
       .select()
-    if (article===null) {
-      throw Error('empty articles);
+    if (!articles) {
+      throw new Error('empty articles');
     }
 
     return articles;
@@ -17,12 +17,53 @@ class ArticleService {
   async findTopThreeArticles() {
     const articles = await this.database('articles')
       .select()
-      .sort((a, b) => a.created_at < b.created_at)
+      .orderBy('created_at', 'desc')  
+      .limit(3);
 
-    if (article===null) {
-      throw Error('empty articles);
+    if (!articles) {
+      throw new Error('empty articles');
     }
 
     return articles;
   }
+
+  async saveArticle(articleData) {
+    const { authorId, title, textContent } = articleData;
+
+    const existingArticle = await this.database('articles')
+      .where({title: title})
+      .first();
+
+    if (existingArticle) {
+      if (authorId != existingArticle.author_id) {
+        throw new Error('There is an article with the same title');
+      }
+    }
+
+    const insertData = {
+      author_id: authorId,
+      title,
+      text_content: textContent,
+      created_at: new Date()
+    };
+
+    const [articleId] = await this.database('articles').insert(insertData).returning('id');
+
+    return articleId;
+  }
+
+  async findById(id) {
+    const article = await this.database('articles')
+      .where({ id })
+      .select('id', 'title', 'text_content', 'author_id', 'created_at')
+      .first();
+
+    if (!article) {
+      throw new Error('Article not found');
+    }
+
+    return article;
+  }
 }
+
+module.exports = ArticleService;

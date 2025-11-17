@@ -131,6 +131,23 @@ class UserController {
             });
         }
     }
+
+    getUserNameById = async (req, res) => {
+        try {
+            const name = await this.userService.getUserName(req.params.id);
+
+            res.json({
+                success: true,
+                data: name
+            });
+        } catch (error) {
+            console.error('Error getting while getting article author user name', error);
+            res.status(500).json({
+                success: false,
+                message: 'Ошибка при получении имени автора статьи'
+            });
+        }
+    }
 }
 
 module.exports = UserController;

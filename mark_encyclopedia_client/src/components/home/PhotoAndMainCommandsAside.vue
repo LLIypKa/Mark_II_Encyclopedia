@@ -46,6 +46,7 @@
     },
     mounted() {
       this.getProfile();
+      this.getTopArticles();
     },
     methods: {
       async getProfile() {
@@ -65,30 +66,31 @@
           }
         }
       },
-      /*async getUserId() {
-        const decodedToken = jwtDecode(this.token);
-        this.id = decodedToken.id;
-      },*/
+      async getTopArticles() {
+        try {
+          const response = await axios.get(`http://localhost:3001/api/articles/top`, {
+             headers: {
+                'Authorization': `Bearer ${this.token}`
+              }
+          });
+
+          if (response.data.success) {
+            this.states = response.data.data;
+          }
+          this.loading = false;
+        } catch (error) {
+          console.error('Error loading top articles:', error);
+          this.loading = false;
+          // Можно показать сообщение, что статей нет
+          this.states = [];
+        }
+      },
       async logout() {
         this.$router.push('/login');
       },
       async toChangeData() {
         this.$router.push('/changeData');
       },
-      /*async getTop3Articles() {
-        try {
-          const response = await axios.get(`http://localhost:3001/articles/summary-top-3`, {
-             headers: {
-                'Authorization': `Bearer ${this.token}`
-              }
-          });
-
-          this.states = response.data;
-          this.loading = !this.loading;
-        } catch (ex) {
-          alert(`Ошибка при загрузке последних статей ${ex}`);
-        }
-      },*/
       async toCreateNewArticle() {
         this.$router.push('/create-article');
       }
