@@ -61,8 +61,8 @@ class UserService {
         // Генерируем токен
         const token = JWTService.generateToken({ 
             id: userId,
-            email: user.email,
-            name: user.name,
+            email: userInsertData.email,
+            name: userInsertData.name,
         });
 
         return {
@@ -140,6 +140,57 @@ class UserService {
         }
         
         return user;
+    }
+
+    async updateUser(userId, updateData, files) {
+        // Валидация ID
+        const id = parseInt(userId);
+        if (isNaN(id) || id <= 0) {
+            throw new Error('Invalid user ID');
+        }
+
+        // Проверяем существование пользователя
+        const existingUser = await this.database('users').where({ id }).first();
+        if (!existingUser) {
+            throw new Error('User not found');
+        }
+
+        // Подготавливаем данные для обновления
+        const allowedFields = ['name', 'email', 'users_status_text', 'users_car_desc'];
+        const updateFields = {};
+
+        // Фильтруем только разрешенные поля
+        Object.keys(updateData).forEach(key => {
+            if (allowedFields.includes(key) && updateData[key] !== undefined) {
+                updateFields[key] = updateData[key];
+            }
+        });
+
+        // Обработка файлов
+        if (files && files.profile_photo) {
+            updateFields.profile_photo_path = `profilePhotos/${files.profile_photo[0].filename}`;
+        }
+
+         if (files && files.car_photo) {
+            const carPhotosData = files.car_photo.map(file => ({
+                user_id: userId,
+                photo_path: `usersCarsPhotos/${file.filename}`
+            }));
+            
+            await this.database('car_desc_photos').insert(carPhotosData);
+        }
+        // Если нечего обновлять
+        if (Object.keys(updateFields).length === 0 && !files) {
+            throw new Error('No data to update');
+        }
+
+        // Выполняем обновление
+        const [updatedUser] = await this.database('users')
+            .where({ id })
+            .update(updateFields)
+            .returning(['id', 'email', 'name', 'profile_photo_path', 'users_status_text', 'users_car_desc', 'created_at']);
+
+        return updatedUser;
     }
 }
 

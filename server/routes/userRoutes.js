@@ -12,9 +12,12 @@ const userController = new UserController(userService);
 const upload = multer({
     storage: multer.diskStorage({
         destination: (req, file, cb) => {
-            const isProfilePhoto = file.fieldname === 'profilePhoto';
-            const uploadPath = isProfilePhoto ? 'profilePhotos' : 'usersCarsPhotos';
-            cb(null, path.join(__dirname, '..', uploadPath));
+            if (file.fieldname === 'profile_photo') {
+                cb(null, path.join(__dirname, '..', 'profilePhotos'));
+            }
+            else if (file.fieldname === 'car_photo') {
+                cb(null, path.join(__dirname, '..', 'usersCarsPhotos'));
+            }
         },
         filename: (req, file, cb) => {
             const ext = path.extname(file.originalname);
@@ -35,6 +38,9 @@ router.post('/register', upload.fields([
 ]), userController.register);
 router.post('/login', userController.login);
 
-router.get('/:id', authUtil, userController.getUserById);
+router.put('/:id', authUtil, upload.fields([
+    { name: 'profile_photo', maxCount: 1 },
+    { name: 'car_photo', maxCount: 3 } // или больше, в зависимости от требований
+]), userController.updateUser)
 
 module.exports = router;

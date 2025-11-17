@@ -24,7 +24,6 @@ class UserController {
     getUserById = async(req, res) => {
         try {
             const user = await this.userService.findById(req.params.id);
-
             res.json({
                 success: true,
                 data: user
@@ -145,6 +144,40 @@ class UserController {
             res.status(500).json({
                 success: false,
                 message: 'Ошибка при получении имени автора статьи'
+            });
+        }
+    }
+    updateUser = async (req, res) => {
+        try {
+            const userId = req.params.id;
+            const updateData = req.body;
+            const files = req.files;
+
+            const updatedUser = await this.userService.updateUser(userId, updateData, files);
+
+            res.json({
+                success: true,
+                message: 'User updated successfully',
+                data: updatedUser
+            });
+        } catch (error) {
+            console.error('Error updating user:', error);
+            if (error.message === 'Invalid user ID' || error.message === 'User not found') {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Пользователь не найден'
+                });
+            }
+            if (error.message === 'No data to update') {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Нет данных для обновления'
+                });
+            }
+            res.status(500).json({
+                success: false,
+                message: 'Ошибка при обновлении пользователя',
+                error: error.message
             });
         }
     }
