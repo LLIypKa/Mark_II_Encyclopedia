@@ -13,6 +13,7 @@ app.use(express.json());
 app.use(cors());
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/articles', require('./routes/ArticlesRoutes'));
+app.use('/api/comments', require('./routes/CommentRoutes'));
 
 app.use('/usersStatusPhotos', express.static(path.join(__dirname, 'usersStatusPhotos')));
 app.use('/profilePhotos', express.static(path.join(__dirname, 'profilePhotos')));
