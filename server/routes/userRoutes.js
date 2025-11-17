@@ -16,7 +16,7 @@ const upload = multer({
                 cb(null, path.join(__dirname, '..', 'profilePhotos'));
             }
             else if (file.fieldname === 'car_photo') {
-                cb(null, path.join(__dirname, '..', 'usersCarsPhotos'));
+                cb(null, path.join(__dirname, '..', 'usersStatusPhotos'));
             }
         },
         filename: (req, file, cb) => {

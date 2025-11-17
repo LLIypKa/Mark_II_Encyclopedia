@@ -172,12 +172,14 @@ class UserService {
         }
 
          if (files && files.car_photo) {
+            await this.database('user_status_photos').where({ user_id: userId }).delete();
+
             const carPhotosData = files.car_photo.map(file => ({
                 user_id: userId,
-                photo_path: `usersCarsPhotos/${file.filename}`
+                photo_path: `usersStatusPhotos/${file.filename}`
             }));
             
-            await this.database('car_desc_photos').insert(carPhotosData);
+            await this.database('user_status_photos').insert(carPhotosData);
         }
         // Если нечего обновлять
         if (Object.keys(updateFields).length === 0 && !files) {
