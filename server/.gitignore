@@ -4,3 +4,4 @@ server/profilePhotos
 server/usersCarsPhotos
 *.jpg
 .env
+server/usersCarsPhotos
