@@ -49,10 +49,10 @@ class ArticleController {
 
     createArticle = async (req, res) => {
         try {
-            const { title, textContent } = req.body;
+            const { newArticleTitle, newArticleContent } = req.body;
             const authorId = req.user.id; // Из JWT токена
 
-            if (!title || !textContent) {
+            if (!newArticleTitle|| !newArticleContent) {
                 return res.status(400).json({
                     success: false,
                     message: 'Заголовок и содержимое статьи обязательны'
@@ -61,8 +61,8 @@ class ArticleController {
 
             const articleData = {
                 authorId,
-                title,
-                textContent
+                title: newArticleTitle,
+                textContent: newArticleContent
             };
 
             const articleId = await this.articleService.saveArticle(articleData);

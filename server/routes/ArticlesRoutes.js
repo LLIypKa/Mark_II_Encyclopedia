@@ -7,12 +7,12 @@ const { authUtil } = require('../utils/auth');
 const articleService = new ArticleService();
 const articleController = new ArticleController(articleService);
 
+// Protected routes (require authentication)
+router.post('/create', authUtil, articleController.createArticle);
 // Public routes
 router.get('/', articleController.getAllArticles);
 router.get('/top', articleController.getTopArticles);
 router.get('/:id', articleController.getArticleById);
 
-// Protected routes (require authentication)
-router.post('/', authUtil, articleController.createArticle);
 
 module.exports = router;
