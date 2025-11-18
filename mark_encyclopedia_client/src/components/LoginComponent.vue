@@ -44,7 +44,7 @@
             async login() {
                 if (this.$refs.form.validate()) {
                     try {
-                        const response = await axios.post('http://localhost:3001/login', {
+                        const response = await axios.post('http://localhost:3001/api/users/login', {
                             email: this.email,
                             password: this.password
                         });

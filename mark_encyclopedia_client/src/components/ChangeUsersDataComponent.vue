@@ -53,14 +53,14 @@
         methods: {
             async loadUserData() {
                 try {
-                    const response = await axios.get(`http://localhost:3001/user/me`,
+                    const response = await axios.get(`http://localhost:3001/api/users/profile`,
                     {
                         headers: {
                             Authorization: `Bearer ${this.token}`,
                         },
                     });
                     if (response.status === 200) {
-                        this.userData = response.data;
+                        this.userData = response.data.data.user;
                     }
                 } catch (error) {
                     console.error("Ошибка при загрузке данных пользователя:", error);
@@ -88,7 +88,8 @@
                         formData.append("car_photo", this.carPhoto);
                     }
 
-                    const response = await axios.put(`http://localhost:3001/user/${this.userId}`, formData, {
+                    console.log(this.profilePhoto)
+                    const response = await axios.put(`http://localhost:3001/api/users/${this.userId}`, formData, {
                         headers: {
                             Authorization: `Bearer ${this.token}`,
                             "Content-Type": "multipart/form-data",

@@ -2,7 +2,7 @@
     <br><br><br><br>
     <v-form @submit.prevent="createArticle">
         <v-text-field variant = "underlined" label = "Заголовок" v-model="newArticleTitle"/>
-        <v-text-field variant = "underlined" label = "Заголовок" v-model="newArticleContent"/>
+        <v-text-field variant = "underlined" label = "Текст" v-model="newArticleContent"/>
         <v-btn type="submit">Создать статью</v-btn>
     </v-form>
 </template>
@@ -28,7 +28,7 @@ import axios from 'axios';
                     }
                 
                 try {
-                    const response = await axios.post('http://localhost:3001/create-article', {
+                    const response = await axios.post('http://localhost:3001/api/articles/create', {
                         newArticleContent: this.newArticleContent,
                         newArticleTitle: this.newArticleTitle,
                         date: new Date().toISOString()

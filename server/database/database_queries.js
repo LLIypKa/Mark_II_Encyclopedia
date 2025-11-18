@@ -1,4 +1,4 @@
-const sqlite = require('sqlite3').verbose();
+/*const sqlite = require('sqlite3').verbose();
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const { name } = require('body-parser');
@@ -191,5 +191,12 @@ function createToken(user) {
     const token = jwt.sign(payload, key, { expiresIn: '1h' })
     return token;
 }
+*/
+//module.exports = { db, createToken, key };
 
-module.exports = { db, createToken, key };
+const knex = require('knex');
+const knexConfig = require('../knexfile');
+
+const db = knex(knexConfig.development);
+
+module.exports = db;
