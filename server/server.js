@@ -23,7 +23,7 @@ app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
     console.log('Origin:', req.headers.origin);
     console.log('Content-Type:', req.headers['content-type']);
-    console.log('Body:', req.body); // ДОБАВЛЕНО: логирование тела запроса
+    console.log('Body:', req.body);
     next();
 });
 
