@@ -15,7 +15,7 @@ const upload = multer({
             if (file.fieldname === 'profile_photo') {
                 cb(null, path.join(__dirname, '..', 'profilePhotos'));
             }
-            else if (file.fieldname === 'car_photo') {
+            else if (file.fieldname === 'car_photo' || file.fieldname === 'usersCarsPhotos') {
                 cb(null, path.join(__dirname, '..', 'usersStatusPhotos'));
             }
         },
@@ -32,10 +32,12 @@ router.get('/profile', authUtil, userController.getProfile);
 router.get('/photos/status', authUtil, userController.getStatusPhotos);
 router.get('/photos/cars', authUtil, userController.getCarPhotos);
 router.get('/getUserNameById/:id', userController.getUserNameById);
-router.post('/register', upload.fields([
-    { name: 'profilePhoto', maxCount: 1 },
-    { name: 'usersCarsPhotos', maxCount: 3 },
-]), userController.register);
+router.post('/register', 
+    //upload.fields([
+    //{ name: 'profilePhoto', maxCount: 1 },
+  //  { name: 'usersCarsPhotos', maxCount: 3 },
+//]),
+userController.register);
 router.post('/login', userController.login);
 
 router.put('/:id', authUtil, upload.fields([

@@ -27,7 +27,15 @@ class UserService {
     }
 
     async register(userData, files) {
+        console.log('=== НАЧАЛО РЕГИСТРАЦИИ ===');
+        console.log('Полученные данные:', userData);
+        console.log('Полученные файлы:', files ? Object.keys(files) : 'Нет файлов');
         const { email, password, name, status, car_desc } = userData;
+
+        if (!email || !password || !name) {
+            console.log('Ошибка: отсутствуют обязательные поля');
+            throw new Error('Email, password и name обязательны');
+        }
 
         const existingUser = await this.database('users').where({ email }).first();
         if (existingUser) {
@@ -43,28 +51,28 @@ class UserService {
             created_at: new Date()
         };
 
-        if (files && files.profilePhoto) {
+       /* if (files && files.profilePhoto) {
             userInsertData.profile_photo_path = `profilePhotos/${files.profilePhoto[0].filename}`;
         }
-
+*/
         const [userId] = await this.database('users').insert(userInsertData).returning('id');
-
+/*
         if (files && files.usersCarsPhotos) {
             const carPhotosData = files.usersCarsPhotos.map(file => ({
                 user_id: userId,
-                photo_path: `usersCarsPhotos/${file.filename}`
+                photo_path: `usersStatusPhotos/${file.filename}`
             }));
             
-            await this.database('car_desc_photos').insert(carPhotosData);
+            await this.database('user_status_photos').insert(carPhotosData);
         }
-
+*/
         // Генерируем токен
         const token = JWTService.generateToken({ 
             id: userId,
             email: userInsertData.email,
             name: userInsertData.name,
         });
-
+        console.log('=== РЕГИСТРАЦИЯ УСПЕШНА ===');
         return {
             user: { id: userId, email, name },
             token
