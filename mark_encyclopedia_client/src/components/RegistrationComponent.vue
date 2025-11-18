@@ -65,31 +65,30 @@
                 console.log('Начало регистрации...');
                 if (this.$refs.form.validate()) {
                     try {
-                        const data = {
-                            email: this.email,
-                            password: this.password,
-                            name: this.name,
-                            status: this.status,
-                            car_desc: this.car_desc
-                        };
-                        /*if (this.profile_photo) {
+                        const formData = new FormData();
+                        formData.append('email', this.email);
+                        formData.append('password', this.password);
+                        formData.append('name', this.name);
+                        formData.append('status', this.status);
+                        formData.append('car_desc', this.car_desc);
+                        if (this.profile_photo) {
                             formData.append('profilePhoto', this.profile_photo);
                         }
                         if (this.cars_photo && this.cars_photo.length > 0) {
                             this.cars_photo.forEach(file => {
                                 formData.append('usersCarsPhotos', file);
                             });
-                        }*/
-                       /* console.log('Отправляемые данные:');
+                        }
+                        console.log('Отправляемые данные:');
                         for (let pair of formData.entries()) {
                             console.log(pair[0] + ', ' + pair[1]);
-                        }*/
+                        }
                         console.log('Отправка запроса на сервер...');
-                        const response = await axios.post('http://localhost:3001/api/users/register', data, {
+                        const response = await axios.post('http://localhost:3001/api/users/register', formData, {
                             headers: {
-                                'Content-Type': 'application/json',
+                                'Content-Type': 'multipart/form-data',
                             },
-                            timeout: 10000
+                            timeout: 30000
                         });
                         alert(response.status)
                         if (response.status == 201) {

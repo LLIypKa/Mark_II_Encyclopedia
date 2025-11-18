@@ -51,30 +51,32 @@ class UserService {
             created_at: new Date()
         };
 
-       /* if (files && files.profilePhoto) {
+        if (files && files.profilePhoto) {
             userInsertData.profile_photo_path = `profilePhotos/${files.profilePhoto[0].filename}`;
         }
-*/
-        const [userId] = await this.database('users').insert(userInsertData).returning('id');
-/*
+
+        const [insertedUserId] = await this.database('users').insert(userInsertData).returning('id');
+        console.log('Пользователь создан с ID:', insertedUserId);
+
         if (files && files.usersCarsPhotos) {
             const carPhotosData = files.usersCarsPhotos.map(file => ({
-                user_id: userId,
+                user_id: insertedUserId.id,
                 photo_path: `usersStatusPhotos/${file.filename}`
             }));
             
             await this.database('user_status_photos').insert(carPhotosData);
+            console.log('Фото машины сохранены в базу');
         }
-*/
+
         // Генерируем токен
         const token = JWTService.generateToken({ 
-            id: userId,
+            id: insertedUserId.id,
             email: userInsertData.email,
             name: userInsertData.name,
         });
         console.log('=== РЕГИСТРАЦИЯ УСПЕШНА ===');
         return {
-            user: { id: userId, email, name },
+            user: { id: insertedUserId.id, email, name },
             token
         };
     }
