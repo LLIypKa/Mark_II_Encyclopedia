@@ -30,7 +30,6 @@
 
 <script>
   import axios from 'axios';
-  import {jwtDecode} from 'jwt-decode'
 
   export default {
     name: 'PhotoAndMainCommandsAsideComponent',
@@ -46,50 +45,51 @@
       };
     },
     mounted() {
-      this.getProfilePhoto();
-      this.getUserId();
-      this.getTop3Articles();
+      this.getProfile();
+      this.getTopArticles();
     },
     methods: {
-      async getProfilePhoto() {
+      async getProfile() {
         if (this.token != null) {
           try {
-            const response = await axios.get(`http://localhost:3001/profile-photo`, {
+            const response = await axios.get(`http://localhost:3001/api/users/profile`, {
               headers: {
                 'Authorization': `Bearer ${this.token}`
-              },
-              responseType: 'blob'
+              }
             });
-            this.profilePhotoUrl = URL.createObjectURL(response.data);
+            const userData = response.data.data.user;
+            this.id = userData.id;
+            this.profilePhotoUrl = 'http://localhost:3001/' + userData.profile_photo_path;
           }
           catch (error) {
-            alert(`Не удалось загрузить фото профиля - ${error}`)
+            alert(`Не удалось загрузить статус профиля - ${error}`);
           }
         }
       },
-      async getUserId() {
-        const decodedToken = jwtDecode(this.token);
-        this.id = decodedToken.id;
+      async getTopArticles() {
+        try {
+          const response = await axios.get(`http://localhost:3001/api/articles/top`, {
+             headers: {
+                'Authorization': `Bearer ${this.token}`
+              }
+          });
+
+          if (response.data.success) {
+            this.states = response.data.data;
+          }
+          this.loading = false;
+        } catch (error) {
+          console.error('Error loading top articles:', error);
+          this.loading = false;
+          // Можно показать сообщение, что статей нет
+          this.states = [];
+        }
       },
       async logout() {
         this.$router.push('/login');
       },
       async toChangeData() {
         this.$router.push('/changeData');
-      },
-      async getTop3Articles() {
-        try {
-          const response = await axios.get(`http://localhost:3001/articles/summary-top-3`, {
-             headers: {
-                'Authorization': `Bearer ${this.token}`
-              }
-          });
-
-          this.states = response.data;
-          this.loading = !this.loading;
-        } catch (ex) {
-          alert(`Ошибка при загрузке последних статей ${ex}`);
-        }
       },
       async toCreateNewArticle() {
         this.$router.push('/create-article');

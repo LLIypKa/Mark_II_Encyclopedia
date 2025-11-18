@@ -192,7 +192,7 @@ function createToken(user) {
     return token;
 }
 */
-module.exports = { db, createToken, key };
+//module.exports = { db, createToken, key };
 
 const knex = require('knex');
 const knexConfig = require('../knexfile');

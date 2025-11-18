@@ -5,7 +5,7 @@
             <v-card-text style="font-size: larger;">
                 <v-form ref = "form" v-model="valid" @submit.prevent="register">
                     <v-text-field variant="underlined" label = "Имя" v-model="name" :rules="nameRules"
-                        type="email" required class="v-text-field" placeholder="Кто ты, воин?"/>
+                        required class="v-text-field" placeholder="Кто ты, воин?"/>
                     <v-text-field variant="underlined" label = "Почта" v-model="email" :rules="emailRules"
                         type="email" required class="v-text-field"/>
                     <v-text-field variant="underlined" label = "Пароль" v-model="password" :rules="passwordRules"
@@ -59,9 +59,10 @@
                 this.profile_photo = event.target.files[0];
             },
             handleFilesSelect(event) {
-                this.cars_photo = event.target.files;
+                this.cars_photo = Array.from(event.target.files);
             },
             async register() {
+                console.log('Начало регистрации...');
                 if (this.$refs.form.validate()) {
                     try {
                         const formData = new FormData();
@@ -70,14 +71,24 @@
                         formData.append('name', this.name);
                         formData.append('status', this.status);
                         formData.append('car_desc', this.car_desc);
-                        formData.append('profilePhoto', this.profile_photo);
-                        for (let i = 0; i < this.cars_photo.length; i++) {
-                            formData.append('usersCarsPhotos', this.cars_photo[i]);
+                        if (this.profile_photo) {
+                            formData.append('profilePhoto', this.profile_photo);
                         }
-                        const response = await axios.post('http://localhost:3001/register', formData, {
+                        if (this.cars_photo && this.cars_photo.length > 0) {
+                            this.cars_photo.forEach(file => {
+                                formData.append('usersCarsPhotos', file);
+                            });
+                        }
+                        console.log('Отправляемые данные:');
+                        for (let pair of formData.entries()) {
+                            console.log(pair[0] + ', ' + pair[1]);
+                        }
+                        console.log('Отправка запроса на сервер...');
+                        const response = await axios.post('http://localhost:3001/api/users/register', formData, {
                             headers: {
                                 'Content-Type': 'multipart/form-data',
                             },
+                            timeout: 30000
                         });
                         alert(response.status)
                         if (response.status == 201) {
@@ -87,7 +98,20 @@
                         
                     }
                     catch (error) {
-                        alert(error.response ? error.response.data : 'Error occurred');
+                        console.error('Полная ошибка регистрации:', error);
+                        if (error.response) {
+                            // Сервер ответил с ошибкой
+                            console.error('Данные ошибки:', error.response.data);
+                            alert(`Ошибка сервера: ${error.response.data.message || error.response.statusText}`);
+                        } else if (error.request) {
+                            // Запрос был сделан, но ответа нет
+                            console.error('Не получен ответ от сервера');
+                            alert('Не удалось соединиться с сервером. Проверьте, запущен ли сервер.');
+                        } else {
+                            // Что-то пошло не так при настройке запроса
+                            console.error('Ошибка настройки запроса:', error.message);
+                            alert('Ошибка при отправке запроса: ' + error.message);
+                        }
                     }
                 }
             },

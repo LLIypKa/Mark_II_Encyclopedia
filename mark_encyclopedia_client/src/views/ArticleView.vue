@@ -20,8 +20,8 @@
     <ul>
         <li v-for="comment in commentaries" :key="comment.id">
             <div>
-                <p>{{ comment.authorName }}</p>
-                <p>{{ comment.content }}, {{ comment.date }}</p>
+                <p>{{ comment.author_name }}</p>
+                <p>{{ comment.text_content }}, {{ comment.created_at }}</p>
             </div>
         </li>
     </ul>
@@ -57,14 +57,14 @@ import { defineComponent } from 'vue';
             async getArticle() {
                 try {
                     let articleId = this.$route.params.id;
-                    const response = await axios.get(`http://localhost:3001/articles/${articleId}`, {
+                    const response = await axios.get(`http://localhost:3001/api/articles/${articleId}`, {
                         headers: {
                             'Authorization': `Bearer ${this.token}`
                         }
                     });
 
                     if (response.status === 200) {
-                        this.article = response.data;
+                        this.article = response.data.data;
                         console.log("Данные статьи:", this.article);
                     } else {
                         alert("Ошибка сервера. Код статуса:", response.status);
@@ -80,14 +80,14 @@ import { defineComponent } from 'vue';
             },
             async getAuthorName() {
                 try { 
-                    const response = await axios.get(`http://localhost:3001/user-name-by-id/${this.article.author_id}`, {
+                    const response = await axios.get(`http://localhost:3001/api/users/getUserNameById/${this.article.author_id}`, {
                         headers: {
                             'Authorization': `Bearer ${this.token}`
                         }
                     });
 
                     if (response.status == 200) {
-                        this.authorName = response.data;
+                        this.authorName = response.data.data;
                     }
                 } catch(err) {
                     console.log(err);
@@ -95,14 +95,14 @@ import { defineComponent } from 'vue';
             },
             async getComments() {
                 try {
-                    const response = await axios.get(`http://localhost:3001/get-comments-for-article/${this.article.id}`, {
+                    const response = await axios.get(`http://localhost:3001/api/comments/article/${this.article.id}`, {
                         headers: {
                             'Authorization': `Bearer ${this.token}`
                         }
                     });
 
                     if (response.status == 200) {
-                        this.commentaries = response.data;
+                        this.commentaries = response.data.data;
                     }
                 } catch(err) {
                     console.log(err);
@@ -115,21 +115,18 @@ import { defineComponent } from 'vue';
                     alert("Введите комментарий")
                     return;
                 }
-                try {
-                    const formData = new FormData();
-                    formData.append("content", this.commentText);
-                    formData.append("date", Date.now());
-                    
-                    const response = await axios.post(`http://localhost:3001/save-comment-to-article/${this.article.id}`, {
-                            content: this.commentText,
-                            date: new Date().toISOString(),
+                try {                    
+                    const response = await axios.post(`http://localhost:3001/api/comments/createComment`, {
+                            text_content: this.commentText,
+                            article_id: this.article.id,
+                            parent_comment_id: null
                          }, {
                         headers: {
                             'Authorization': `Bearer ${this.token}`
                         }
                     });
 
-                    if (response.status == 200) {
+                    if (response.status == 201) {
                         alert("Коммент сохранён")
                         
                     }
